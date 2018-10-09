@@ -1,0 +1,23 @@
+{
+  "name": "prosjekt",
+  "version": "1.0.0",
+  "description": "Prosjekt (Solveig, Joachim, Lewi, Tony)",
+  "main": "api.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jstl-mm200/Appiklasjonsutvikling.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/jstl-mm200/Appiklasjonsutvikling/issues"
+  },
+  "homepage": "https://github.com/jstl-mm200/Appiklasjonsutvikling#readme",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
