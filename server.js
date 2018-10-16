@@ -1,56 +1,56 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const port = ('port', (process.env.PORT || 8080));
-const db = require("/js/db.js");
+const db = require("./js/db.js"); 
+const user = require("./js/user.js");
 
+let studentNames = [];
 
-
-app.set('port', port);
-app.use(express.static('Public'));
+app.set('port', (process.env.PORT || 8080));
+app.use(express.static('public'));
 app.use(bodyParser.json());
+app.use(user);
+
+
+
+
+app.get('/app/students', function(req,res, next){
+
+    res.json(studentNames).end();
+
+});
+
+app.post('/app/student', function (req,res,next){
+    let studentName = req.body.studentName;
+
+    let isUnique = ! isNameInList(studentNames, studentName);
+
+    if(isUnique && studentName){
+        studentNames.push(req.body.studentName);
+        res.status(200).json(studentNames).end();
+    } else{
+        res.status(400).json(studentNames).end();
+        res.se
+    }
+});
+
+function isNameInList(list,name){
+    let searchName = name.toLowerCase();
+    let result = false;
+    for(let student in list){
+		if(list[student].toLowerCase() === searchName){
+            result = true;
+            break;
+		}
+    }
+	return result;
+}
+
+app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).send('Oops thats bad');
+});
+
 app.listen(app.get('port'), function() {
-    console.log('Event server running', app.get('port'));
-    
+    console.log('Drowning pool server', app.get('port'));
 });
-
-
-
-const users = [];
-
-let userEmail = req.body.email;
-let userName = req.body.name;
-let passwordHash = req.body.pswHash;
-let userRole = req.body.role;
-
-app.post('/app/users',function(req,res,next){
-    let query`INSERT INTO "public"."Users"("email", "username", "hash", "role")
-    VALUES('${userEmail}', '${userName}', '${passwordHash}', ${userRole}) RETURNING "id", "email", "hash", "role"`
-    
-    let code = db.insert(query) ? 200:500;
-    res.status(code).json({}).end();
-})
-
-app.get('/app/user',function(req,res,next){
-    
-    let query = "Select * from Users";
-    let users = db.select(query;)
-        
-    if(users){
-       res.status(200).json(JSON.parse(users));
-    }else{
-        //???
-                            }
-});
-
-app.post("/api/user",function(req,res){
-    
-    let user = req.body;
-    user.id = users.length +1;
-    user.push(user);
-    res.json(user).end();
-    
-
-})     
-    
-
