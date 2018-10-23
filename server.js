@@ -13,7 +13,7 @@ function isNameInList(list,name){
     let searchName = name.toLowerCase();
     let result = false;
     for(let student in list){
-		if(list[student].toLowerCase() === searchName){
+		if(list[user].toLowerCase() === searchName){
             result = true;
             break;
 		}
