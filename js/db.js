@@ -1,7 +1,7 @@
 const pg = require("pg");
 
 const { Pool, Client } = require('pg');
-const connectionString = process.env.DATABASE_URL;
+const connectionString = process.env.DATABASE_URL+"?ssl=true";
 
 const db = {}
 
@@ -14,6 +14,7 @@ try {
     client.connect()
     
     if (client) {
+        // dersomproblem præv med await foran client.
         client.query(query, (err, res) => {
             console.log(err, res)
             respons = res.rows;
