@@ -9,3 +9,23 @@ app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(user);
 
+function isNameInList(list,name){
+    let searchName = name.toLowerCase();
+    let result = false;
+    for(let student in list){
+		if(list[student].toLowerCase() === searchName){
+            result = true;
+            break;
+		}
+    }
+	return result;
+}
+
+app.use(function(err, req, res, next) {
+    console.error(err.stack);
+    res.status(500).send('Oops thats bad');
+});
+
+app.listen(app.get('port'), function() {
+    console.log('Drowning pool server', app.get('port'));
+});
