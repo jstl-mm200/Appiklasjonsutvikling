@@ -40,7 +40,7 @@ router.post('/app/users',function(req,res,next){
     res.status(code).json({}).end()
 })
 
-router.get('/app/users/:userName',function(req,res,next){
+router.get('/app/users',function(req,res,next){
 
     let paswordHash = req.body.pswHash;
     let userName = req.params["userName"];
