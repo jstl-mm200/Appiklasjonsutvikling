@@ -10,7 +10,7 @@ app.set('port', (process.env.PORT || 8080));
 app.use(express.static('public'));
 app.use(bodyParser.json());
 app.use(user);
-/*
+
 app.get('/app/requests', function(req,res, next){
     res.json(userNames).end();
 });
@@ -27,7 +27,7 @@ app.post('/app/request', function (req,res,next){
         res.se
     }
 });
-*/
+
 
 
 app.use(function(err, req, res, next) {
