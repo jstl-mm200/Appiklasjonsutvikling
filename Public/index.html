@@ -112,7 +112,34 @@
             
             form.onsubmit =function(evt){
                    evt.preventDefault();
+                let userName = document.getElementById("userName").value;
+                let email = document.getElementById("email").value;
+                let password = document.getElementById("password").value;
+                
+                fetch('/app/user',{
+                    method:"POST",
+                    body:{
+                        name:userName,
+                        email:email,
+                        passwordHash:password
+                    },
+                    headers: {
+                        "Content-Type": "application/json; charset=utf-8"
+                    },
+                    
+                }).then(function(data){
+                    if(data.status < 400){
+                        return data.json();
+                    },
+                }).then(function(createdUser){
+                    if(createUser.id){
+                        clearScreen();
+                        displayLoginForm();
+                    }
+                });
+                
             }
+            
            
         }
     

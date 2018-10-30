@@ -35,7 +35,7 @@ router.post('/app/request', function (req,res,next){
 
     // Build sql query for inserting request in DB.
     let sqlQuery = `INSERT INTO "public"."Users"("email", "username", "hash") 
-        VALUES('${userEmail}', '${userName}', '${paswordHash}') RETURNING *`;
+        VALUES('${userEmail}', '${userName}', '${passwordHash}') RETURNING *`;
     
     let request = db.insert(sqlQuery);
 
