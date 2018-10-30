@@ -48,10 +48,9 @@ router.get('/app/users',function(req,res,next){
     let query = `Select * from Users where userName='${userName}' 
     and hash='${paswordHash}'`;
 
-    let user = db.select(query) ;
 
-    if(user){
-        res.status(200).json(user).end()
+    if(users){
+        res.status(200).json(users).end()
     } else{
         res.status(401).json({}).end();
     }
@@ -62,5 +61,5 @@ router.get('/app/users',function(req,res,next){
 
 
 
-const users{}
+
 module.exports = router;
