@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-//const user = require("./js/users.js");
+const user = require("./js/users.js");
 
 //let userNames = [];
 
@@ -9,7 +9,7 @@ const app = express();
 app.set('port', (process.env.PORT || 8080));
 app.use(express.static('public'));
 app.use(bodyParser.json());
-//app.use(user);
+app.use(user);
 
 /*app.get('/app/requests', function(req,res, next){
     res.json(userNames).end();
