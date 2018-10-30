@@ -55,9 +55,12 @@ router.get('/app/users',function(req,res,next){
     } else{
         res.status(401).json({}).end();
     }
+    
+    let code = db.insert(query) ? 200:500;
+    res.status(code).json({}).end();
 })
 
 
 
-
+const users{}
 module.exports = router;
