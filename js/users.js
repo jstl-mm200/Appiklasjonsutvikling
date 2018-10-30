@@ -11,7 +11,7 @@ router.get('/app/users',function(req,res,next){
     
 });
 
-router.post('/app/users',function(req,res,next){
+router.post('/app/users', async function(req,res,next){
 
     let userEmail = req.body.email;
     let userName = req.body.name;
