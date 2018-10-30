@@ -26,24 +26,11 @@ router.post('/app/users',function(req,res,next){
     res.status(code).json({}).end()
 })
 
-router.post('/app/users',function(req,res,next){
-
-    let userEmail = req.body.email;
-    let userName = req.body.name;
-    let paswordHash = req.body.pswHash;
-    let userRole = req.body.role;
-
-    let query = `INSERT INTO "public"."Users"("email", "username", "hash") 
-        VALUES('${userEmail}', '${userName}', '${paswordHash}') RETURNING *`;
-
-    let code = db.insert(query) ? 200:500;
-    res.status(code).json({}).end()
-})
 
 router.get('/app/users',function(req,res,next){
 
     let paswordHash = req.body.pswHash;
-    let userName = req.params["userName"];
+    let usersName = req.params["userName"];
 
     let query = `Select * from Users where userName='${userName}' 
     and hash='${paswordHash}'`;
