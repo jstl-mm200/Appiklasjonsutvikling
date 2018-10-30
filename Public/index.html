@@ -39,7 +39,7 @@
     </template>
 
     <template id="createUserUITemplate">
-        <form>
+        <form id="createUserForm">
             <label for="userName">User name:</label>
             <input type="text" id="userName">
 
@@ -102,11 +102,21 @@
                 console.log("Create user bt clicked")
             }
         }
+       
+    
         function displayCreateUserForm(){
             let element = createElementFromTemplate("#createUserUITemplate")
             window.document.body.appendChild(element);
+            
+            let form = document.getElementById("createUserForm");
+            
+            form.onsubmit =function(evt){
+                   evt.preventDefault();
+            }
            
         }
+    
+    
         function displaySubmitRequestForm(){
         }
    

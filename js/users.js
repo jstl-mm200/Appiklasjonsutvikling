@@ -8,7 +8,6 @@ router.get('/app/users',function(req,res,next){
     if(users){
         res.status(200).json(JSON.parse(users));
     }
-        
     
 });
 
@@ -27,7 +26,7 @@ router.post('/app/users',function(req,res,next){
 })
 
 
-router.get('/app/users',function(req,res,next){
+router.get('/app/users/:userName',function(req,res,next){
 
     let paswordHash = req.body.pswHash;
     let usersName = req.params["userName"];
