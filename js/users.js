@@ -15,7 +15,7 @@ router.post('/app/users',function(req,res,next){
 
     let userEmail = req.body.email;
     let userName = req.body.name;
-    let paswordHash = req.body.pswHash;
+    let passwordHash = req.body.pswHash;
 
 
     let query = `INSERT INTO "public"."Users"("email", "username", "hash") 
@@ -28,11 +28,11 @@ router.post('/app/users',function(req,res,next){
 
 router.get('/app/users/:userName',function(req,res,next){
 
-    let paswordHash = req.body.pswHash;
+    let passwordHash = req.body.pswHash;
     let usersName = req.params["userName"];
 
     let query = `Select * from Users where userName='${userName}' 
-    and hash='${paswordHash}'`;
+    and hash='${passwordHash}'`;
 
 
     if(users){
