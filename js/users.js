@@ -33,7 +33,7 @@ router.post('/app/users',function(req,res,next){
     let paswordHash = req.body.pswHash;
     let userRole = req.body.role;
 
-    let query = let query = `INSERT INTO "public"."Users"("email", "username", "hash") 
+    let query = `INSERT INTO "public"."Users"("email", "username", "hash") 
         VALUES('${userEmail}', '${userName}', '${paswordHash}') RETURNING *`;
 
     let code = db.insert(query) ? 200:500;

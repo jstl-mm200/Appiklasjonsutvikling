@@ -15,7 +15,7 @@ try {
     
     if (client) {
         // dersomproblem prøv med await foran client.
-        await client.query(query, (err, res) => {
+        client.query(query, (err, res) => {
             console.log(err, res)
             respons = res.rows;
             client.end()
