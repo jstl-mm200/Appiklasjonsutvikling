@@ -11,11 +11,11 @@ function runQuery(query){
         connectionString: connectionString})
     
 try {
-    await client.connect()
+    client.connect()
     
     if (client) {
         // dersomproblem prøv med await foran client.
-        client.query(query, (err, res) => {
+        await client.query(query, (err, res) => {
             console.log(err, res)
             respons = res.rows;
             client.end()
