@@ -122,11 +122,11 @@
                 
                 fetch('/app/user',{
                     method:"POST",
-                    body:{
+                    body:JSON.stringify({
                         name:userName,
                         email:email,
                         passwordHash:password
-                    },
+                    }),
                     headers: {
                         "Content-Type": "application/json; charset=utf-8"
                     },
@@ -140,9 +140,10 @@
                         clearScreen();
                         displayLoginForm();
                     }
-                });
+                }).catch(err =>{
+                    console.error(err);
                 
-            }
+            });
             
            
         }

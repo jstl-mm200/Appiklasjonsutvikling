@@ -18,7 +18,7 @@ router.post('/app/users', async function(req,res,next){
     let passwordHash = req.body.pswHash;
 
 
-    let query = `INSERT INTO "public"."Users"("email", "username", "hash") 
+    let query = `INSERT INTO "Public"."Users"("email", "username", "hash") 
         VALUES('${userEmail}', '${userName}', '${passwordHash}') RETURNING *`;
 
     let code = await db.insert(query) ? 200:500;
