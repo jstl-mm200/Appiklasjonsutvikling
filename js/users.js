@@ -3,7 +3,7 @@ var router = express.Router();
 var db = require("./db.js");
 
 router.get('/app/users',function(req,res,next){
-    let query = "Select * from Users";
+    let query = "Select * from users";
     let users = db.select(query);
     if(users){
        // res.status(200).json(JSON.parse(users));
@@ -32,7 +32,7 @@ router.get('/app/users/:userName',function(req,res,next){
     let passwordHash = req.body.pswHash;
     let usersName = req.params["userName"];
 
-    let query = `Select * from Users where userName='${userName}' 
+    let query = `Select * from users where userName='${userName}' 
     and hash='${passwordHash}'`;
 
 
