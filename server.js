@@ -2,11 +2,12 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const db = require("./js/db.js"); 
+const authorize = require("./authorize.js");
 const user = require("./js/users.js"); 
 const que = require("./js/requestQue.js") 
 
 app.set('port', (process.env.PORT || 8080));
-app.use(express.static('public'));
+app.use(express.static('Public'));
 app.use(bodyParser.json());
 app.use(user);
 app.use(que);
