@@ -24,7 +24,7 @@ router.get('/app/requests', function(req,res, next){
     res.json(requests).end();
 });
 
-router.post('/app/request', function (req,res,next){
+router.post('/app/requests', function (req,res,next){
 
     ///TODO: Is the request unique?
 
