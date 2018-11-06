@@ -6,7 +6,8 @@ router.get('/app/users',function(req,res,next){
     let query = "Select * from Users";
     let users = db.select(query);
     if(users){
-        res.status(200).json(JSON.parse(users));
+       // res.status(200).json(JSON.parse(users));
+        res.status(200).text("hallo fra get users");
     }
     
 });
