@@ -13,12 +13,8 @@
     <div id="content">
 
     </div>
-    <template id="addRequestTemplate">
-        <form>
-            <label for="description">Description:</label>
-            <input type="text" id="description">
-            <button id="submitRequest" type="button">Submit</button>
-        </form>
+    <template id="TodoListTemplate">
+        <h1>Hei og velkommen</h1>
     </template>
 
     <template id="authenticateUserUITemplate">
@@ -32,7 +28,7 @@
             <label for="rememberMe">Remember Me:</label>
             <input type="checkbox" id="rememberMe">
 
-            <button  id="loginBt">Login</button>
+            <button  id="loginBt" onclick="logInUser()">Login</button>
             <button type="button" id="createUserBt">Create User</button>
         </form>
 
@@ -67,22 +63,30 @@
         (function() {
             if (!authenticatedUser) {
                 displayLoginForm();
-            } else{
-                displaySubmitRequestForm();
+            } else if (authenticatedUser) {
+                displayTodoListTemplate();
+            }
+            
+            else{
+               console.log("ooooops");
             }
         })();
+    
         function addElement(el){
             document.getElementById("content").appendChild(el);
         }
+    
         function clearScreen(){
             let content = document.getElementById("content");
             content.innerHTML = ""
         }
+    
         function createElementFromTemplate(templateID){
             let template = document.querySelector(templateID);
             let clone = document.importNode(template.content, true);
             return clone;
         }
+    
         function displayLoginForm(){
             
             let loginForm = createElementFromTemplate("#authenticateUserUITemplate")
@@ -90,24 +94,48 @@
             addElement(loginForm);
             let loginBt = document.querySelector("#loginBt");
             let createBt = document.querySelector("#createUserBt");
-            loginBt.onclick = function(evt){
-                console.log("Login bt clicked")
-                
-                let username = document.getElementById("userName").value;
-                let password = document.getElementById("password").value;
-                if(username.length > 1 && password.length > 1){
-                } else{
-                    alert("Danger! Danger You are a hacker ;)");
-                }
-            }
-            createBt.onclick = function(evt){
+            
+            
+            createBt.onclick = function(){
                 clearScreen();
                 displayCreateUserForm();
                 console.log("Create user bt clicked")
             }
+            
         }
-       
     
+        function logInUser(){
+            console.log("Login bt clicked")
+
+            let username = document.getElementById("userName").value;
+            let password = document.getElementById("password").value;
+
+            if(username.length > 1 && password.length > 1){
+                fetch('/app/users',{
+                    method:"POST",
+                    body:JSON.stringify({
+                        userName:userName,
+                        password:password
+                    }),
+                    headers: {
+                        "Content-Type": "application/json; charset=utf-8"
+                    },
+                }).then(function(data){
+                    if(data.status < 400){
+                        return data.json();
+                    }
+                }).then(function(authenticatedUser){
+                    if(authenticatedUser.id){
+                        clearScreen();
+                        displayTodoListTemplate();
+                    }
+                }).catch(err =>{
+                    console.error(err);
+
+                });
+            }
+        }
+        
         function displayCreateUserForm(){
             let element = createElementFromTemplate("#createUserUITemplate")
             window.document.body.appendChild(element);
@@ -154,7 +182,7 @@
         }
     
     
-        function displaySubmitRequestForm(){
+        function displayTodoListTemplate(){
     console.log("velkommen")
         }
         }
