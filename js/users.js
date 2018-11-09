@@ -14,20 +14,21 @@ router.get('/app/users',function(req,res,next){
 
 router.post('/app/users', async function(req,res,next){
 
-    let userEmail = req.body.email;
-    let userName = req.body.name;
-    let passwordHash = req.body.pswHash;
+    let email = req.body.email;
+    let userName = req.body.userName;
+    let password = req.body.password;
+    let fullName = req.body.fullName;
 
 
-    let query = `INSERT INTO "Public"."Users"("email", "username", "hash") 
-        VALUES('${userEmail}', '${userName}', '${passwordHash}') RETURNING *`;
+    let query = `INSERT INTO "users"("username", "email", "password", "full_name") 
+        VALUES('${userName}', '${email}', '${password}', '${fullName}') RETURNING *`;
 
     let code = await db.insert(query) ? 200:500;
     res.status(code).json({}).end()
 })
 
 
-router.get('/app/users/:userName',function(req,res,next){
+/*router.get('/app/users/:userName',function(req,res,next){
 
     let passwordHash = req.body.pswHash;
     let usersName = req.params["userName"];
@@ -44,7 +45,7 @@ router.get('/app/users/:userName',function(req,res,next){
     
     let code = db.insert(query) ? 200:500;
     res.status(code).json({}).end();
-})
+})*/
 
 
 

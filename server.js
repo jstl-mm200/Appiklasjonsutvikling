@@ -1,16 +1,16 @@
-/*const express = require('express');
+const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const db = require("./js/db.js"); 
 const authorize = require("./authorize.js");
 const users = require("./js/users.js"); 
-const que = require("./js/requestQue.js") 
+//const que = require("./js/requestQue.js") 
 
 app.set('port', (process.env.PORT || 3000));
 app.use(express.static('Public'));
 app.use(bodyParser.json());
 app.use(users);
-app.use(que);
+//app.use(que);
 
 
 
@@ -23,10 +23,10 @@ app.use(function(err, req, res, next) {
 
 app.listen(app.get('port'), function() {
     console.log('Test', app.get('port'));
-});*/
+});
 
 
-
+/*Jostein verson 
 const express = require("express");
 const app = express();
 //const pgp = require("pg-promise")();
@@ -47,4 +47,4 @@ app.use("/app/users/", users);
 
 app.listen(3000, function(){
     console.log("server is running");
-});
+});*/

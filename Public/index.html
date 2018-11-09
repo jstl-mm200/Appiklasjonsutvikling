@@ -40,6 +40,9 @@
 
     <template id="createUserUITemplate">
         <form id="createUserForm">
+            <label for="fullName">Full name:</label>
+            <input type="text" id="fullName">
+            
             <label for="userName">User name:</label>
             <input type="text" id="userName">
 
@@ -115,6 +118,7 @@
                 
                 evt.preventDefault();
                 
+                let fullName = document.getElementById("fullName").value;
                 let userName = document.getElementById("userName").value;
                 let email = document.getElementById("email").value;
                 let password = document.getElementById("password").value;
@@ -123,9 +127,10 @@
                 fetch('/app/users',{
                     method:"POST",
                     body:JSON.stringify({
-                        name:userName,
+                        fullName:fullName,
+                        userName:userName,
                         email:email,
-                        passwordHash:password
+                        password:password
                     }),
                     headers: {
                         "Content-Type": "application/json; charset=utf-8"

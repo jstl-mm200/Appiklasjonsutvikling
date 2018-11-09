@@ -1,8 +1,8 @@
-var express = require('express')
+var express = require('express');
 var router = express.Router();
 var db = require("./db.js");
 
-let userNames = [];
+/*let userNames = [];
 
 function isNameInList(list,name){
     let searchName = name.toLowerCase();
@@ -14,15 +14,15 @@ function isNameInList(list,name){
 		}
     }
 	return result;
-}
+}*/
 
 
-router.get('/app/requests', function(req,res, next){
+/*router.get('/app/requests', function(req,res, next){
     // Get all requests in the DB that have not ben responded to.
     let sqlQuery = "Select * from requests where answerd is NULL"
     let requests = db.select(sqlQuery);
     res.json(requests).end();
-});
+});*/
 
 router.post('/app/requests', function (req,res,next){
 
@@ -34,10 +34,10 @@ router.post('/app/requests', function (req,res,next){
     let description = req.body.description;
 
     // Build sql query for inserting request in DB.
-    let sqlQuery = `INSERT INTO "Public"."Users"("email", "username", "hash") 
-        VALUES('${userEmail}', '${userName}', '${passwordHash}') RETURNING *`;
+    let sqlQuery = `INSERT INTO "Public"."users"("email", "username", "password") 
+        VALUES('${email}', '${userName}', '${password}'); RETURNING *`;
     
-    let request = db.insert(sqlQuery);
+    let; request = db.insert(sqlQuery);
 
     if(request){
         res.status(200).json(request).end();
