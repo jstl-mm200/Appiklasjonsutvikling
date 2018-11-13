@@ -111,7 +111,7 @@
             let password = document.getElementById("password").value;
 
             if(username.length > 1 && password.length > 1){
-                fetch('/app/users',{
+                fetch('/login/',{
                     method:"POST",
                     body:JSON.stringify({
                         userName:userName,
@@ -128,6 +128,7 @@
                     if(authenticatedUser.id){
                         clearScreen();
                         displayTodoListTemplate();
+                        console.log("Velkommeninn")
                     }
                 }).catch(err =>{
                     console.error(err);

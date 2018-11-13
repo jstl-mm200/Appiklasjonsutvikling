@@ -1,6 +1,8 @@
-var express = require('express')
-var router = express.Router();
-var db = require("./db.js");
+const express = require('express')
+const router = express.Router();
+const db = require("./db.js");
+const bodyParser = require('body-parser');
+//const bcrypt = require('bcrypt.js');
 
 router.get('/app/users',function(req,res,next){
     let query = "Select * from users";
@@ -13,12 +15,14 @@ router.get('/app/users',function(req,res,next){
 });
 
 //------------------------------------------Legg til bruker-------------------------------------------
+
 router.post('/app/users', async function(req,res,next){
 
     let email = req.body.email;
     let userName = req.body.userName;
     let password = req.body.password;
     let fullName = req.body.fullName;
+    //let hashPassw = bcrypt.hashSync(password, 10);
 
     let query = `INSERT INTO public."users"("username", "email", "password", "full_name") 
         VALUES('${userName}', '${email}', '${password}', '${fullName}') RETURNING *`;
@@ -28,6 +32,7 @@ router.post('/app/users', async function(req,res,next){
 })
 
 //----------------------------------------Logg inn på bruker-----------------------------------------
+
 router.post('/login/', async function(req,res,next){
 
     let userName = req.body.userName;
@@ -36,32 +41,45 @@ router.post('/login/', async function(req,res,next){
     let query = `SELECT * FROM public."users" WHERE username = '${userName}'`;
     console.log(query);
     
+    let isAuthenticated = false;
+    let error = null;
+    let user = null;
+    
     try {
-        let datarows = await db.any(query);
+        
+        let datarows =  await db.select(query); 
         console.log(datarows);
-        let nameMatch = datarows.length == 1 ? true : false;
+        let nameMatch = datarows.length == 1;
         if (nameMatch == true){
-            let passwordMatch = (password, datarows[0].password);
-            if (passwordMatch) {
+            if (password === datarows[0].password){ // Lur plass å bruke bcrypt            
                 console.log(username)
-                res.status(200).json({
-                    mld: "Hello, " + username,
-                    userName:userName
-                });
+                isAuthenticated = true;
+                user = datarows[0];
             }
-        } else {
-            res.status(401).json({
-                mld: "Feilbrukernavn eller passord"
-            });
-        }
+        } 
     } catch (err){
-        res.status(500).json({
-            error: err
-        });
+        error = err
     }
 
-    let code = await db.insert(query) ? 200:500;
-    res.status(code).json({}).end()
+    
+    if(isAuthenticated){
+    res.status(200).json({
+                    mld: "Hello, " + username,
+                    userName:userName,
+                    id:user.id,
+                    //token:
+                });
+        }else if(error === null){
+            res.status(404).json({
+                    mld: "Ikke autensiert, feil brukernanv og passord etc..."
+                });
+        }else{
+           res.status(500).json({
+                    mld: "Oops vi har en feil"
+                    //error = err
+                }); 
+        }
+   
 });
 
 

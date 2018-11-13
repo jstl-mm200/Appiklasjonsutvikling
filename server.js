@@ -1,8 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
-const db = require("./js/db.js"); 
-const authorize = require("./authorize.js");
+//const db = require("./js/db.js"); 
+//const authorize = require("./authorize.js");
 const users = require("./js/users.js"); 
 //const que = require("./js/requestQue.js") 
 
