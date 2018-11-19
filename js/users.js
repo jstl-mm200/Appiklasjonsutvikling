@@ -2,67 +2,132 @@ const express = require('express')
 const router = express.Router();
 const db = require("./db.js");
 const bodyParser = require('body-parser');
-//const bcrypt = require('bcrypt.js');
+const authorize = require("./auth.js");
+const bcrypt = require('bcryptjs');
 
-router.get('/app/users',function(req,res,next){
-    let query = "Select * from users";
-    let users = db.select(query);
-    if(users){
-       // res.status(200).json(JSON.parse(users));
-        res.status(200).text("hallo fra get users");
-    }
-    
-});
+const secret = SUPER_SECRET_KEY = process.env.TOKEN_KEY || "TransparantWindowsFlyingMonkeys";
+
 
 //------------------------------------------Legg til bruker-------------------------------------------
 
-router.post('/app/users', async function(req,res,next){
+router.post("/register/", async function(req,res,next){
 
     let email = req.body.email;
     let userName = req.body.userName;
     let password = req.body.password;
     let fullName = req.body.fullName;
-    //let hashPassw = bcrypt.hashSync(password, 10);
+    
+    let userExists = await checkIfUserExists(userName);
 
-    let query = `INSERT INTO public."users"("username", "email", "password", "full_name") 
+    if (userExists === false) {
+        let hashPassword = bcrypt.hashSync(password, 10);
+
+    let query = `INSERT INTO public."users"("userName", "email", "password", "full_name") 
         VALUES('${userName}', '${email}', '${password}', '${fullName}') RETURNING *`;
 
-    let code = await db.insert(query) ? 200:500;
-    res.status(code).json({}).end()
+    try {
+            let statusCode = await db.any(query) ? 200 : 500;
+            console.log("Status: " + statusCode);
+            res.status(statusCode).json({
+                msg: `Velkommen, ${userName}`
+            }).end()
+
+        } catch (error) {
+            res.status(500).json({
+                error: error
+            }); //something went wrong!
+            console.log("ERROR: " + error);
+        }
+    } else {
+        res.status(409).json({
+            msg: "Brukernavn allerede i bruk"
+        });
+    }
 })
 
 //----------------------------------------Logg inn på bruker-----------------------------------------
 
-router.post('/login/', async function(req,res,next){
+router.post("/login/", async function(req,res,next){
 
     let userName = req.body.userName;
     let password = req.body.password;
     
-    let query = `SELECT * FROM public."users" WHERE username = '${userName}'`;
-    console.log(query);
-    
-    let isAuthenticated = false;
-    let error = null;
-    let user = null;
+    let query = `SELECT * FROM public."users" WHERE userName = '${userName}' AND "activated"='true`;
     
     try {
-        
         let datarows =  await db.select(query); 
         console.log(datarows);
-        let nameMatch = datarows.length == 1;
+        
+        let nameMatch = datarows.length == 1 ? true : false;
+        
         if (nameMatch == true){
-            if (password === datarows[0].password){ // Lur plass å bruke bcrypt            
-                console.log(username)
-                isAuthenticated = true;
-                user = datarows[0];
-            }
-        } 
-    } catch (err){
+            let passwordMatch = bcrypt.compareSync(password, datarows[0].hashpassword);
+            
+            if (passwordMatch) {
+                let token = bcrypt.hashSync(datarows[0].id + secret, 10);
+            
+            res.status(200).json({
+                    msg: "Hello, " + datarows[0].userName,
+                    userName: datarows[0].userName,
+                    id: datarows[0].id,
+                    token: token
+                });
+            } else {
+                res.status(401).json({
+                    msg: "Feil brukernavn eller passord"
+                });   
+            } 
+    } catch (err) {
+        res.status(500).json({
         error = err
+        });
+                             
     }
+}
 
-    
-    if(isAuthenticated){
+    async function checkMailAndPassword(userName, password) {
+    let query = `SELECT * FROM public."users" WHERE userName = '${userName}'`;
+
+    try {
+        let datarows = await db.any(query);
+        let userName = datarows.length == 1 ? true : false;
+        if (userName == true) {
+            let passwordMatch = bcrypt.compareSync(password, datarows[0].hashpassword);
+            if (passwordMatch) {
+                res.status(200).json({
+                    msg: "Hello, " + datarows[0].userName,
+                    userName: datarows[0].userName
+                });
+            } else {
+                res.status(401).json({
+                    msg: "Feil brukernavn eller passord"
+                });
+            }
+        } else {
+            res.status(401).json({
+                msg: "Feil brukernavn eller passord"
+            });
+
+        }
+    } catch (err) {
+        res.status(500).json({
+            error: err
+        }); //something went wrong!
+    }
+}
+
+async function checkIfUserExists(email) {
+    let query = `SELECT * FROM public."users" WHERE userName = '${userName}' AND "activated"='true'`;
+    let datarows = await db.any(query);
+    if (datarows.length > 0) {
+        return true;
+    } else {
+        console.log("Bruker finnes ikke fra før. Registrering fortsetter");
+        return false;
+    }
+}
+module.exports = router;
+/* if(isAuthenticated){
     res.status(200).json({
                     mld: "Hello, " + username,
                     userName:userName,
@@ -78,34 +143,4 @@ router.post('/login/', async function(req,res,next){
                     mld: "Oops vi har en feil"
                     //error = err
                 }); 
-        }
-   
-});
-
-
-
-
-
-/*router.get('/app/users/:userName',function(req,res,next){
-
-    let passwordHash = req.body.pswHash;
-    let usersName = req.params["userName"];
-
-    let query = `Select * from users where userName='${userName}' 
-    and hash='${passwordHash}'`;
-
-
-    if(users){
-        res.status(200).json(users).end()
-    } else{
-        res.status(401).json({}).end();
-    }
-    
-    let code = db.insert(query) ? 200:500;
-    res.status(code).json({}).end();
-})*/
-
-
-
-
-module.exports = router;
+        } */

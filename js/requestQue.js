@@ -3,7 +3,6 @@ var router = express.Router();
 var db = require("./db.js");
 
 /*let userNames = [];
-
 function isNameInList(list,name){
     let searchName = name.toLowerCase();
     let result = false;

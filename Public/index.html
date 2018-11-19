@@ -63,18 +63,24 @@
         (function() {
             if (!authenticatedUser) {
                 displayLoginForm();
-            } else if (authenticatedUser) {
+            } else {
                 displayTodoListTemplate();
             }
             
-            else{
-               console.log("ooooops");
-            }
         })();
     
-        function addElement(el){
-            document.getElementById("content").appendChild(el);
+        function addElement(element) {
+        let content = document.getElementById("content");
+        if (content) {
+            if (element) {
+                content.appendChild(element);
+            } else {
+                console.error(new Error(`The element is empty`))
+            }
+        } else {
+            console.error(new Error(`There is no content element in the document`))
         }
+    }
     
         function clearScreen(){
             let content = document.getElementById("content");
@@ -92,9 +98,38 @@
             let loginForm = createElementFromTemplate("#authenticateUserUITemplate")
             //loginForm = window.document.body.appendChild(loginForm);
             addElement(loginForm);
+            
             let loginBt = document.querySelector("#loginBt");
             let createBt = document.querySelector("#createUserBt");
             
+            loginBt.onclick = function (evt) {
+                console.log("Login bt clicked")
+                
+                let userName = document.getElementById("userName").value;
+                let password = document.getElementById("password").value;
+                
+                if (username.length > 1 && password.length > 1) {
+                    /// login loginlogin
+                    
+                    fetch(`/app/user/${username}`).then(data => {
+                        if (data.status === 200) {
+                            return data.json()
+                        } else {
+                            return new PromiseRejectionEvent();
+                        }
+                    }).then(json => {
+                        // User is logged in.
+                        authenticatedUser = JSON.parse(json);
+                        clearScreen();
+                        // Velkommen skjerm
+                    }).catch(err => {
+                        // deal with error
+                    })
+                } else {
+                    alert("Danger! Danger!")
+                }
+                
+            }
             
             createBt.onclick = function(){
                 clearScreen();
@@ -102,39 +137,6 @@
                 console.log("Create user bt clicked")
             }
             
-        }
-    
-        function logInUser(){
-            console.log("Login bt clicked")
-
-            let username = document.getElementById("userName").value;
-            let password = document.getElementById("password").value;
-
-            if(username.length > 1 && password.length > 1){
-                fetch('/login/',{
-                    method:"POST",
-                    body:JSON.stringify({
-                        userName:userName,
-                        password:password
-                    }),
-                    headers: {
-                        "Content-Type": "application/json; charset=utf-8"
-                    },
-                }).then(function(data){
-                    if(data.status < 400){
-                        return data.json();
-                    }
-                }).then(function(authenticatedUser){
-                    if(authenticatedUser.id){
-                        clearScreen();
-                        displayTodoListTemplate();
-                        console.log("Velkommeninn")
-                    }
-                }).catch(err =>{
-                    console.error(err);
-
-                });
-            }
         }
         
         function displayCreateUserForm(){
@@ -151,7 +153,6 @@
                 let userName = document.getElementById("userName").value;
                 let email = document.getElementById("email").value;
                 let password = document.getElementById("password").value;
-                console.log("knapp trykket")
                 
                 fetch('/app/users',{
                     method:"POST",
@@ -179,17 +180,14 @@
                 
             });
             
-           
         }
-    
     
         function displayTodoListTemplate(){
     console.log("velkommen")
         }
-        }
+    }
    </script>
 
 
 
 </html>
-    
