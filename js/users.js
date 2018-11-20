@@ -9,68 +9,90 @@ const bcrypt = require('bcryptjs');
 const SUPER_SECRET_KEY = process.env.TOKEN_KEY || "TransparantWindowsFlyingMonkeys";
 
 
-//------------------------------------------Legg til bruker-------------------------------------------
 
-router.post("/register/", async function(req,res,next){
+
+
+
+/*------------------------------------------ Legg til bruker -------------------------------------------*/
+
+router.post('/app/createUser', async function(req,res,next){
+    
+   
 
     let email = req.body.email;
     let userName = req.body.userName;
     let password = req.body.password;
     let fullName = req.body.fullName;
     
-    let userExists = await checkIfUserExists(userName);
+    //let userExists = await checkIfUserExists(userName);
 
-    if (userExists === false) {
+    if (true) {
         let hashPassword = bcrypt.hashSync(password, 10);
+        let query = `INSERT INTO public."users"("username", "email", "password", "full_name") VALUES('${userName}', '${email}', '${hashPassword}', '${fullName}') RETURNING *`;
+        
+        console.log(query);
 
-    let query = `INSERT INTO public."users"("userName", "email", "password", "full_name") 
-        VALUES('${userName}', '${email}', '${password}', '${fullName}') RETURNING *`;
-
-    try {
-            let statusCode = await db.any(query) ? 200 : 500;
-            console.log("Status: " + statusCode);
-            res.status(statusCode).json({
-                msg: `Velkommen, ${userName}`
-            }).end()
-
+        try {
+            
+            let result = await db.insert(query);
+            console.log(result);
+           res.status(200).json({
+                msg: `Velkommen, ${userName}`,
+                data: result.rows
+            }).end();
+    
         } catch (error) {
             res.status(500).json({
                 error: error
             }); //something went wrong!
             console.log("ERROR: " + error);
         }
-    } else {
+    } 
+    else {
         res.status(409).json({
             msg: "Brukernavn allerede i bruk"
         });
     }
 })
 
-//----------------------------------------Logg inn på bruker-----------------------------------------
+/*---------------------------------------- Logg inn med bruker -----------------------------------------*/
 
-router.post("/login/", async function(req,res,next){
+router.post("/app/login", async function(req,res,next){
 
     let userName = req.body.userName;
     let password = req.body.password;
     
-    let query = `SELECT * FROM public."users" WHERE userName = '${userName}' AND "activated"='true`;
+    let query = `SELECT * FROM users WHERE userName = '${userName}'`;
+    // AND "activated"='true
+    
+    //console.log(query);
+    //console.dir(req.body);
     
     try {
         let datarows =  await db.select(query); 
-        console.log(datarows);
+       // console.log("rad fra database: ", datarows);
         
-        let nameMatch = datarows.length == 1 ? true : false;
         
-        if (nameMatch == true){
-            let passwordMatch = bcrypt.compareSync(password, datarows[0].hashpassword);
+        
+        if (datarows.rows.length > 0){
+            
+            let user = datarows.rows[0];
+            //console.log(user.password);
+            let passwordMatch = bcrypt.compareSync(password, user.password);
+            
+            console.log(passwordMatch);
             
             if (passwordMatch) {
-                let token = bcrypt.hashSync(datarows[0].id + secret, 10);
+                
+                let token = jwt.sign({
+                id: user.user_id,
+                userName: user.userName
+                }, SUPER_SECRET_KEY);
             
-            res.status(200).json({
-                    msg: "Hello, " + datarows[0].userName,
-                    userName: datarows[0].userName,
-                    id: datarows[0].id,
+                res.status(200).json({
+                    msg: "Hello, " + user.username,
+                    userName: user.userName,
+                    id: user.id,
                     token: token
                 });
             } else {
@@ -78,26 +100,31 @@ router.post("/login/", async function(req,res,next){
                     msg: "Feil brukernavn eller passord"
                 });   
             } 
-    } catch (err) {
-        res.status(500).json({
-        error = err
-        });
-                             
+        } else
+            {
+                res.status(401).json({
+                    msg: "Feil brukernavn eller passord"
+                }); 
+            }
+    }catch (err) {
+            res.status(500).json({error : err});
     }
-}
+});
 
-    async function checkMailAndPassword(userName, password) {
+
+async function checkNameAndPassword(userName, password) {
     let query = `SELECT * FROM public."users" WHERE userName = '${userName}'`;
-
+    let user = datarows[0];
+    
     try {
         let datarows = await db.any(query);
         let userName = datarows.length == 1 ? true : false;
         if (userName == true) {
-            let passwordMatch = bcrypt.compareSync(password, datarows[0].hashpassword);
+            let passwordMatch = bcrypt.compareSync(password, user.password);
             if (passwordMatch) {
                 res.status(200).json({
-                    msg: "Hello, " + datarows[0].userName,
-                    userName: datarows[0].userName
+                    msg: "Hello, " + user.userName,
+                    userName: user.userName
                 });
             } else {
                 res.status(401).json({
@@ -108,7 +135,6 @@ router.post("/login/", async function(req,res,next){
             res.status(401).json({
                 msg: "Feil brukernavn eller passord"
             });
-
         }
     } catch (err) {
         res.status(500).json({
@@ -117,7 +143,7 @@ router.post("/login/", async function(req,res,next){
     }
 }
 
-async function checkIfUserExists(email) {
+/*async function checkIfUserExists(email) {
     let query = `SELECT * FROM public."users" WHERE userName = '${userName}' AND "activated"='true'`;
     let datarows = await db.any(query);
     if (datarows.length > 0) {
@@ -126,7 +152,8 @@ async function checkIfUserExists(email) {
         console.log("Bruker finnes ikke fra før. Registrering fortsetter");
         return false;
     }
-}
+} */
+
 module.exports = router;
 /* if(isAuthenticated){
     res.status(200).json({

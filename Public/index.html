@@ -10,13 +10,10 @@
     
     <h1> TodoList JSTL</h1>
     
-    <div id="container">
+    <div id="container"></div>
 
-    </div>
-    <template id="TodoListTemplate">
-        <h1>Hei og velkommen</h1>
-    </template>
-
+<!------------------------- Logg inn temp ------------------------------->
+    
     <template id="authenticateUserUITemplate">
         <form>
             <label for="userName">User name:</label>
@@ -28,11 +25,12 @@
             <label for="rememberMe">Remember Me:</label>
             <input type="checkbox" id="rememberMe">
 
-            <button  id="loginBt" onclick="logInUser()">Login</button>
-            <button type="button" id="createUserBt">Create User</button>
+            <button  id="loginBtn"  >Login</button>
+            <button id="createUserBt" onclick="createUserBtn()" type="button">Create User</button>
         </form>
-
     </template>
+    
+<!------------------------- Lag bruker temp ------------------------------->
 
     <template id="createUserUITemplate">
         <form id="createUserForm">
@@ -48,11 +46,16 @@
             <label for="password">Password:</label>
             <input type="password" id="password">
 
-            <button>Create</button>
+            <input type="submit" value="Create" />
         </form>
-
     </template>
+    
+<!------------------------- Velkommen temp ------------------------------->
+    
+    <template id="todoListTemplate">
+        <h1>Hei og velkommen</h1>
         
+    </template>
     
 </body>
     
@@ -60,110 +63,106 @@
         const DEBUG = true;
         var authenticationToken = null;
         var authenticatedUser = null;
+    
+        let cont = document.getElementById("container");
         
         (function() {
             if (!authenticatedUser) {
                 displayLoginForm();
+                console.log("ikke logget inn")
             } else {
                 displayTodoListTemplate();
             }
-            
         })();
     
-        function addElement(element) {
-        let content = document.getElementById("content");
-        if (content) {
-            if (element) {
-                content.appendChild(element);
-            } else {
-                console.error(new Error(`The element is empty`))
-            }
-        } else {
-            console.error(new Error(`There is no content element in the document`))
-        }
-    }
-    
-        function clearScreen(){
-            let content = document.getElementById("content");
-            content.innerHTML = "";
+        function viewTemp(id, cont){
+            cont.innerHTML = "";
+            let temp = document.getElementById(id);
+            let clone = temp.content.cloneNode(true);
+            cont.appendChild(clone);
         }
     
-        function createElementFromTemplate(templateID){
-            let template = document.querySelector(templateID);
-            let clone = document.importNode(template.content, true);
-            return clone;
-        }
+/*---------------------------- Logg inn ----------------------------------*/
     
         function displayLoginForm(){
+            viewTemp("authenticateUserUITemplate", cont);
+            let bt = document.getElementById("loginBtn");
+            bt.onclick = loginBtn;
             
-            let loginForm = createElementFromTemplate("#authenticateUserUITemplate")
-            //loginForm = window.document.body.appendChild(loginForm);
-            addElement(loginForm);
-            
-            let loginBt = document.querySelector("#loginBt");
-            let createBt = document.querySelector("#createUserBt");
-            
-            loginBt.onclick = function (evt) {
-                console.log("Login bt clicked")
+            //let loginBt = document.querySelector("#loginBt");
+            //let createBt = document.querySelector("#createUserBt");
+        }
+    
+        function loginBtn(evt){
+            evt.preventDefault();
+            console.log("Login bt clicked");
+
+            let userName = document.getElementById("userName").value;
+            let password = document.getElementById("password").value;
+
+            if (userName.length > 1 && password.length > 1) {
+                /// login loginlogin
                 
-                let userName = document.getElementById("userName").value;
-                let password = document.getElementById("password").value;
-                
-                
-                
-                if (userName.length > 1 && password.length > 1) {
-                    /// login loginlogin
-                    
-                    fetch(`/app/user/${userName}`).then(data => {
-                        if (data.status === 200) {
-                            return data.json()
-                        } else {
-                            return new PromiseRejectionEvent();
-                        }
-                    }).then(json => {
-                        // User is logged in.
-                        authenticatedUser = JSON.parse(json);
-                        clearScreen();
-                        // Velkommen skjerm
-                    }).catch(err => {
-                        // deal with error
-                    })
-                } else {
-                    alert("Danger! Danger!")
+                let request={
+                    method:"POST",
+                    body:JSON.stringify({
+                        userName:userName,
+                        password:password
+                    }),
+                    headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                }
                 }
                 
-            }
-            
-            createBt.onclick = function(){
-                clearScreen();
-                displayCreateUserForm();
-                console.log("Create user bt clicked")
-            }
-            
+                fetch(`/app/login`,request).then(data => {
+                    if (data.status === 200) {
+                        return data.json()
+                    } else {
+                        return new PromiseRejectionEvent();
+                    }
+                }).then(json => {
+                    // User is logged in.
+                    authenticatedUser = json;
+                    displayTodoListTemplate();
+                    console.log(json);
+                    // Velkommen skjerm
+                }).catch(err => {
+                    // deal with error
+                })
+            } else {
+                alert("Danger! Danger!")
+            }                
+        }
+    
+/*---------------------------- Lag bruker ----------------------------------*/
+          
+        function createUserBtn(){
+            displayCreateUserForm();
+            console.log("Create user bt clicked");
         }
         
         function displayCreateUserForm(){
-            let element = createElementFromTemplate("#createUserUITemplate")
-            window.document.body.appendChild(element);
             
+              
+            viewTemp("createUserUITemplate", cont);
             let form = document.getElementById("createUserForm");
+            //document.body.appendChild(form);
             
             form.onsubmit = function(evt){
                 
                 evt.preventDefault();
-                
                 let fullName = document.getElementById("fullName").value;
                 let userName = document.getElementById("userName").value;
                 let email = document.getElementById("email").value;
                 let password = document.getElementById("password").value;
                 
-                fetch('/app/users',{
-                    method:"POST",
-                    body:JSON.stringify({
-                        fullName:fullName,
-                        userName:userName,
-                        email:email,
-                        password:password
+                fetch('/app/createUser',{
+                    method: "POST",
+                    body: JSON.stringify({
+                        fullName: fullName,
+                        userName: userName,
+                        email: email,
+                        password: password
                     }),
                     headers: {
                         "Content-Type": "application/json; charset=utf-8"
@@ -174,21 +173,23 @@
                         return data.json();
                     }
                 }).then(function(createdUser){
-                    if(createdUser.id){
-                        clearScreen();
-                        displayLoginForm();
-                    }
+                    console.log(createdUser);    
+                    displayLoginForm();
+                    
                 }).catch(err =>{
                     console.error(err);
-                
             });
             
-        }
+            }
+        }   
+    
+/*---------------------------- Velkommen ----------------------------------*/
     
         function displayTodoListTemplate(){
-    console.log("velkommen")
+            viewTemp("todoListTemplate", cont);
+            console.log("velkommen");
         }
-    }
+    
    </script>
 
 
