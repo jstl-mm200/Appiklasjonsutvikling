@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const router = express.Router();
 const db = require('./db'); //database
 const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
 
 // SECRET -----------------------------
 const secret = SUPER_SECRET_KEY = process.env.TOKEN_KEY || "TransparantWindowsFlyingMonkeys";

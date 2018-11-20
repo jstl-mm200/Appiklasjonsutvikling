@@ -3,9 +3,10 @@ const router = express.Router();
 const db = require("./db.js");
 const bodyParser = require('body-parser');
 const authorize = require("./auth.js");
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-const secret = SUPER_SECRET_KEY = process.env.TOKEN_KEY || "TransparantWindowsFlyingMonkeys";
+const SUPER_SECRET_KEY = process.env.TOKEN_KEY || "TransparantWindowsFlyingMonkeys";
 
 
 //------------------------------------------Legg til bruker-------------------------------------------
