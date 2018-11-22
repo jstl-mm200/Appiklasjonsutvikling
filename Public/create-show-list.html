@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="Style.css">
+    <title></title>
+</head>
+
+<body>
+    
+    <div id="container" class="container"></div>
+    
+<!---------------------- Forside --------------------->
+    
+    <template id="frontPageTemp">
+        
+        <!-------------- Meny ------------->   
+        <ul class="navbar">
+            <li class="nav-bar-txt"><span id="profilTxt">"Brukernavn"</span></li>
+        </ul>
+        
+        <h1> OVERSIKT </h1>
+    
+       <div class="menuChoice" onclick="displayCreateListTemp()">
+            <h3>NY LISTE</h3>
+            <p>Hei</p>
+            <img src="img/new-list-icon.png" class="icons">
+        </div>
+        
+        <div class="menuChoice">
+            <h3>MINE LISTER</h3>
+            <p id="numTxt1">Ingen lister</p>
+            <img src="img/list-icon.png" class="icons">
+        </div>
+        
+        <div class="menuChoice">
+            <h3>KALENDER</h3>
+            <p>Ingen avtaler eller tidspunkter</p>
+            <img src="img/calender.icon.png" class="icons">
+        </div>
+        
+        <div class="menuChoice" onclick="openModal1()">
+            <h3>PROFIL</h3>
+            <p>Hei</p>
+            <img src="img/profile-icon.png" class="icons">
+        </div>
+        
+    </template>
+        
+<!---------------------- lag liste ---------------------> 
+    
+    <template id="createListTemp">
+        
+        <!------ nav ------>   
+        <ul class="navbar">
+            <li class="navbarElem"><a class="active">Hjem</a></li>
+            <li class="navbarElem"><a onclick="displayCreateListTemp()">Ny liste</a></li>
+            <li class="navbarElem"><a onclick="displayShowListTemp()" >Mine lister</a></li>
+            <li class="navbarElem"><a onclick="openModal1()">Profil</a></li>
+            <li class="navbarElem"><a onclick="openModal2()">Logg ut</a></li>
+            <li class="navbarElem"><span id="numTxt2" class="nav-bar-txt">Ingen lister</span></li>
+            <li class="nav-bar-txt"><span >"Brukernavn"</span></li>
+            
+        </ul>
+        <div id="create-list-div">
+            <h3>Lag ny liste</h3>    
+
+            <input id="nameInp" placeholder="Listenavn" ><br><br>    
+            <input id="elemInp" class="inpField" placeholder="Hva skal gjøres" type="text">
+            <button id="btnAddElem" class="buttons">Legg til</button><br><br>
+            <button id="btnDone" class="buttons" onclick="addListToDb()">Ferdig!</button>
+            <div id="contCreateList"></div> 
+        </div>
+    </template>
+    
+<!---------------------- vis lister ---------------------> 
+    
+    <template id="showListTemp">
+        
+        <!------ Nav ------>    
+        <ul class="navbar">
+            <li class="navbarElem"><a class="active" onclick="displayfrontPageTemp()" >Hjem</a></li>
+            <li class="navbarElem"><a onclick="displayCreateListTemp()">Ny liste</a></li>
+            <li class="navbarElem"><a onclick="displayShowListTemp()" >Mine lister</a></li>
+            <li class="navbarElem"><a onclick="openModal1()">Profil</a></li>
+            <li class="navbarElem"><a onclick="openModal2()">Logg ut</a></li>
+            <li class="navbarElem"><span id="numTxt2" class="nav-bar-txt">Ingen lister</span></li>
+            <li class="nav-bar-txt"><span >"Brukernavn"</span></li>
+        </ul>
+        
+        <h2 id="titleTxt">Mine liser</h2>
+        <hr>
+        
+        <div id="contLister" class="container"></div> 
+    </template>
+    
+<!---------------------- profil modal ---------------------> 
+    
+    <div id="profileModal" class="modal">
+
+        <div class="modal-content">
+            <span id="close" onclick="closeModal()" >&times;</span>
+            <p><img src="img/profile-icon-red-border.png" class="icons"></p>
+            <h3 id="profName" style="margin-top: -66px;">Navn</h3>
+            <p id="profUName">Brukernavn</p>
+            <p id="profEmail">Epost</p>
+            <button class="buttons gray-buttons">Bytt passord</button>
+        </div>
+
+    </div>
+    
+<!---------------------- logg ut modal ---------------------> 
+    
+    <div id="logoutModal" class="modal">
+        <div class="modal-content">
+            <h3 >Ha det, vi sees!</h3><br>
+            <button class="buttons gray-buttons" onclick="logout()">Ok!</button>
+        </div>
+    </div>
+    
+</body>
+    
+<script>
+    
+    const DEBUG = true;
+    var authenticationToken = null;
+    var authenticatedUser = null;
+    
+    let cont = document.getElementById("container");    
+    let currentList = [];
+    let listeData = []; //slett etterhvert
+    displayfrontPageTemp();
+    
+    function displayfrontPageTemp(){
+        viewTemp("frontPageTemp", cont);
+    }
+    
+/*----------------- Create a list ------------------- */
+    
+    function displayCreateListTemp(){
+        viewTemp("createListTemp", cont);  
+    
+        get("btnAddElem").onclick = function(){
+            console.log("klikk la til et punkt"); 
+            currentList.push(get("elemInp").value)
+            get("contCreateList").innerHTML += `<ul><li>${elemInp.value}</li><ul>`;
+            console.log(currentList);
+            get("elemInp").value ="";            
+        }
+    }
+    
+    function addListToDb(){
+        console.log("sender liste til db"); 
+        fetch('/app/list',{
+            method: "POST",
+            body: JSON.stringify({
+                listName: get("nameInp").value,
+                listCont: currentList
+            }),
+            headers: {
+                "Content-Type": "application/json; charset=utf-8"
+            },
+
+        }).then(function(data){
+            if(data.status < 400){
+                return data.json();
+            }
+        }).catch(err =>{
+            console.error(err);
+        });   
+    }
+   
+/*----------------- Show all lists ------------------- */
+    
+   function displayShowListTemp(){
+        viewTemp("showListTemp", cont);
+        refreshList();
+        get("numTxt2", "numTxt1").innerHTML = "<span> Antall: " + listeData.length; + "</span>";
+    }
+    
+    function refreshList() {
+        get("contLister").innerHTML = "";
+        for (let i = 0; i < listeData.length; i++) {
+            get("contLister").innerHTML += `
+                <hr>
+                <h4>${listeData[i].navn}</h4>
+                <p>Innhold: ${listeData[i].obj}</p>
+            `;
+            
+            let btn = document.createElement("button");
+            btn.appendChild(document.createTextNode("Vis"));
+            btn.id = i;
+            btn.onclick = showOne;//(event)
+            get("contLister").appendChild(btn);
+            //get("contLister").innerHTML += "<hr>"
+        }
+    }
+    
+/*----------------- Show one lists ------------------- */  
+    
+    function showOne(evt){
+        let current = event.currentTarget.id;
+        console.log("klikk id " + current);
+        get("contLister").innerHTML ="";
+        
+        for (let i=0; i < listeData[current].obj.length; i++){
+            get("titleTxt").innerHTML = listeData[current].navn;
+            get("contLister").innerHTML += `  
+                <label class="checkLabel"> ${listeData[current].obj[i]}
+                    <input id="box" type="checkbox" onclick="cheked()">
+                    <span class="checkmark"></span>
+                </label>`;
+        }
+    }
+    
+    function cheked() {
+        if (get("box").checked == true){
+            console.log("checked");
+            //checkedElem.push();
+        } 
+        else {
+           console.log("un-checked");
+        }
+    }
+    
+/*----------------- Profile-modal ------------------- */   
+
+    function openModal1() {
+        get("profileModal").style.display = "block";
+    }
+    
+    function closeModal() {
+        get("profileModal").style.display = "none";
+    }
+    
+    window.onclick = function(event) {
+        if (event.target == get("profileModal")) {
+            get("profileModal").style.display = "none";
+        }
+    }
+    
+/*----------------- logg ut modal ------------------- */   
+
+    function openModal2() {
+        get("logoutModal").style.display = "block";
+    }
+    
+    function logout(){
+        window.location = "index.html";
+        //logger faktisk ikke ut
+    }
+
+/*----------------- -------------- ------------------- */   
+
+    function click(evt){
+        let selected;
+        console.log("farge");
+        if(selected) {
+            selected.classList.remove("active");
+            //console.log(data[evt.currentTarget.id]);
+        }
+      
+        selected = evt.target;
+        selected.classList.add("active");
+    }
+    
+    function viewTemp(id, cont) {
+        cont.innerHTML = "";
+        let templ = document.getElementById(id);
+        let clone = templ.content.cloneNode(true);         
+        cont.appendChild(clone);
+    }
+    
+    function get(id) {
+        return document.getElementById(id);
+    }
+        
+</script>
+    
+</html>

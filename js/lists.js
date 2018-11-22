@@ -6,10 +6,29 @@ const authorize = require("./auth.js");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
-router.post("/app/list",authorize, function(req,res,next){
+router.post('/app/list',authorize, async function(req,res,next){
     
     // Legge til en ny liste i db.
-    
+    let listName = req.body.listName;
+    let listCont = req.body.listCont;
+  
+    let query = `INSERT INTO public."lists"("list_name", "list_element") VALUES('${listName }', '${listCont}) RETURNING *`;
+
+    console.log("query " + query);
+
+    try {
+        let result = await db.insert(query);
+        console.log(result);
+        res.status(200).json({
+            msg: `Ny liste:, ${listName}`
+        }).end();
+
+    } catch (error) {
+        res.status(500).json({
+            error: error
+        }); //something went wrong!
+        console.log("ERROR: " + error);
+    }
     res.status(200).send("YESSS");
     
 });

@@ -1,6 +1,6 @@
 const express = require('express')
 const router = express.Router();
-const db = require("./db.js");
+const db = require("./db.js"); 
 const bodyParser = require('body-parser');
 const authorize = require("./auth.js");
 const jwt = require('jsonwebtoken');
@@ -8,16 +8,9 @@ const bcrypt = require('bcryptjs');
 
 const SUPER_SECRET_KEY = process.env.TOKEN_KEY || "TransparantWindowsFlyingMonkeys";
 
-
-
-
-
-
-/*------------------------------------------ Legg til bruker -------------------------------------------*/
+/*------------------------------------------ Legg til bruker -----------------------------------------*/
 
 router.post('/app/createUser', async function(req,res,next){
-    
-   
 
     let email = req.body.email;
     let userName = req.body.userName;
@@ -36,7 +29,7 @@ router.post('/app/createUser', async function(req,res,next){
             
             let result = await db.insert(query);
             console.log(result);
-           res.status(200).json({
+            res.status(200).json({
                 msg: `Velkommen, ${userName}`,
                 data: result.rows
             }).end();
@@ -71,9 +64,7 @@ router.post("/app/login", async function(req,res,next){
     try {
         let datarows =  await db.select(query); 
        // console.log("rad fra database: ", datarows);
-        
-        
-        
+             
         if (datarows.rows.length > 0){
             
             let user = datarows.rows[0];
@@ -85,8 +76,8 @@ router.post("/app/login", async function(req,res,next){
             if (passwordMatch) {
                 
                 let token = jwt.sign({
-                id: user.user_id,
-                userName: user.userName
+                    id: user.user_id,
+                    userName: user.userName
                 }, SUPER_SECRET_KEY);
             
                 res.status(200).json({
