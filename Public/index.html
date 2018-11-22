@@ -54,6 +54,7 @@
     
     <template id="todoListTemplate">
         <h1>Hei og velkommen</h1>
+        <p>Velkommen</p>
         
     </template>
     
@@ -96,10 +97,8 @@
         function loginBtn(evt){
             evt.preventDefault();
             console.log("Login bt clicked");
-
             let userName = document.getElementById("userName").value;
             let password = document.getElementById("password").value;
-
             if (userName.length > 1 && password.length > 1) {
                 /// login loginlogin
                 

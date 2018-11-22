@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const app = express();
 const db = require("./js/db.js"); 
 const users = require("./js/users.js"); 
-const lists = require("./lists.js")
+const lists = require("./js/lists.js");
 
 app.set('port', (process.env.PORT || 3000));
 app.use(express.static('public'));
