@@ -1,8 +1,8 @@
 const express = require('express')
 const router = express.Router();
-const db = require("./js/db.js");
+const db = require("./db.js");
 const bodyParser = require('body-parser');
-const authorize = require("./js/auth.js");
+const authorize = require("./auth.js");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
