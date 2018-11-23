@@ -6,6 +6,15 @@ const authorize = require("./auth.js");
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
 
+
+router.post('/app/showCreate', authorize, async function(req,res,next){
+    
+    var fileText = global.appRoot + "\\public\\create-show-list.html";
+    console.log(Object.keys(req.body));
+    
+    res.sendFile(fileText);
+});
+
 router.post('/app/list',authorize, async function(req,res,next){
     
     // Legge til en ny liste i db.

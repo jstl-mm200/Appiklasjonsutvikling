@@ -7,7 +7,7 @@ const SUPER_SECRET_KEY = process.env.TOKEN_KEY || "TransparantWindowsFlyingMonke
 // AUTHENTICATE USER ------------------
 function authenticateUser (req,res,next) {
    
-    let token = req.headers['x-access-auth'] || req.body.auth || req.params.auth; // Suporting 3 ways of submiting token
+    let token = req.headers['x-access-auth'] || req.body.auth || req.params.auth || req.query.auth; // Suporting 3 ways of submiting token
     console.log("her er token", token);
     try {
         let decodedToken = jwt.verify(token, SUPER_SECRET_KEY); // Is the token valid?

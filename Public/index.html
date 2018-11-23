@@ -17,12 +17,12 @@
     
     <template id="authenticateUserUITemplate">
         <h1> TodoList JSTL</h1>
-        <form class="form">
+        <form class="form" id="frmLogin">
             <label for="userName" class="inpLabel">User name</label>
-            <input type="text" id="userName"> <br>
+            <input type="text" id="userName" name="userName"> <br>
 
             <label for="password" class="inpLabel">Password</label>
-            <input type="password" id="password"><br>
+            <input type="password" id="password" name="password"><br>
             
              <label class="checkLabel">
                 <input id="box" type="checkbox" onclick="cheked()">
@@ -98,6 +98,7 @@
         function loginBtn(evt){
             evt.preventDefault();
             console.log("Login bt clicked");
+            
 
             let userName = document.getElementById("userName").value;
             let password = document.getElementById("password").value;
@@ -130,7 +131,19 @@
                     localStorage.setItem("token", json.token);
                     localStorage.setItem("userName", userName);
                     localStorage.setItem("id", json.id);
-                    displayTodoListTemplate();
+                    
+                    // velkommen inn --------------------------------------------
+                    var form = document.createElement("form");
+                    var element1 = document.createElement("input"); 
+                    form.method = "POST";
+                    form.action = "app/showCreate";   
+                    element1.value=json.token;
+                    element1.name="auth";
+                    form.appendChild(element1); 
+                    element1.type="hidden";
+                    document.body.appendChild(form);
+
+                    form.submit();
                     // Velkommen skjerm
                 }).catch(err => {
                     // deal with error
@@ -198,14 +211,8 @@
             
             }
         }   
-    
-/*---------------------------- Velkommen inn ----------------------------------*/
-    
-        function displayTodoListTemplate(){
-            console.log("velkommen");
-            window.location = "create-show-list.html"
-            
-        }
+        
+
     
    </script>
 
