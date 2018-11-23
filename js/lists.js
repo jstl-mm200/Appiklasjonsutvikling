@@ -12,7 +12,7 @@ router.post('/app/list',authorize, async function(req,res,next){
     let listName = req.body.listName;
     let listCont = req.body.listCont;
   
-    let query = `INSERT INTO public."lists"("list_name", "list_element") VALUES('${listName }', '${listCont}) RETURNING *`;
+    let query = `INSERT INTO public."lists"("list_name", "list_element", "") VALUES('${listName }', '${listCont}') RETURNING *`;
 
     console.log("query " + query);
 
@@ -20,8 +20,11 @@ router.post('/app/list',authorize, async function(req,res,next){
         let result = await db.insert(query);
         console.log(result);
         res.status(200).json({
-            msg: `Ny liste:, ${listName}`
-        }).end();
+            msg: "Hello, " + result.listName +" id "+ result.list_id,
+            //listId: result.list_id
+            //let listArray = result.rows[0];
+            //listId: listArray.list_id
+        });
 
     } catch (error) {
         res.status(500).json({
@@ -29,6 +32,21 @@ router.post('/app/list',authorize, async function(req,res,next){
         }); //something went wrong!
         console.log("ERROR: " + error);
     }
+    res.status(200).send("YESSS");  
+});
+
+router.get("/app/list/",authorize, function(req,res,next){
+    // hente og se alle lister
+  
+    let query = `SELECT * FROM lists WHERE list_name`;
+    
+    try {
+        await db.select(query);
+        
+    }catch (err) {
+            res.status(500).json({error : err});
+    }   
+    
     res.status(200).send("YESSS");
     
 });
@@ -39,7 +57,7 @@ router.post("/app/list/:listID",authorize,function(req,res,next){
 
 router.get("/app/list/:listeID",authorize, function(req,res,next){
     
-    // hente og se en liste
+    // hente og se en liste 
     
     res.status(200).send("YESSS");
     

@@ -14,18 +14,14 @@ async function runQuery(query) {
         connectionString:connectionString,
         ssl: true
     })
-    
-    
-
+   
     try {
         
         // Wait untill we have a connection to the database
         await client.connect();
         
         console.log("connected");
-        
-        
-
+            
         // Waite untill the prommise has completed
         let res = await client.query(query).then(function (res) {
             // If you want to manipulate the respons it can be done in her.
@@ -35,8 +31,7 @@ async function runQuery(query) {
             console.log(err);
         });
 
-        respons = res;
-       
+        respons = res;       
       
     } catch (e) {
         console.log("Error ");
@@ -44,7 +39,6 @@ async function runQuery(query) {
         /*OOPS*/
     }
 
-     
     return respons;
 
 }

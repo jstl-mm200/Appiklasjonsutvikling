@@ -62,7 +62,7 @@ router.post("/app/login", async function(req,res,next){
     //console.dir(req.body);
     
     try {
-        let datarows =  await db.select(query); 
+        let datarows =  await db.select(query); //henter ut array med db-innhold 
        // console.log("rad fra database: ", datarows);
              
         if (datarows.rows.length > 0){
@@ -81,11 +81,12 @@ router.post("/app/login", async function(req,res,next){
                 }, SUPER_SECRET_KEY);
             
                 res.status(200).json({
-                    msg: "Hello, " + user.username,
+                    msg: "Hello, " + user.username +" id "+ user.user_id,
                     userName: user.userName,
-                    id: user.id,
+                    id: user.user_id,
                     token: token
                 });
+                
             } else {
                 res.status(401).json({
                     msg: "Feil brukernavn eller passord"

@@ -17,7 +17,7 @@
         
         <!-------------- Meny ------------->   
         <ul class="navbar">
-            <li class="nav-bar-txt"><span id="profilTxt">"Brukernavn"</span></li>
+            <li class="nav-bar-txt"><span id="profilTxt"></span></li>
         </ul>
         
         <h1> OVERSIKT </h1>
@@ -126,6 +126,8 @@
     const DEBUG = true;
     var authenticationToken = null;
     var authenticatedUser = null;
+    let dataUserName = localStorage.getItem("userName");
+    let dataUserId = localStorage.getItem("id");
     
     let cont = document.getElementById("container");    
     let currentList = [];
@@ -134,7 +136,7 @@
     
     function displayfrontPageTemp(){
         viewTemp("frontPageTemp", cont);
-    }
+    }   
     
 /*----------------- Create a list ------------------- */
     
@@ -149,14 +151,19 @@
             get("elemInp").value ="";            
         }
     }
-    
+   
     function addListToDb(){
+        
+        let token = localStorage.getItem("token");
+        
         console.log("sender liste til db"); 
         fetch('/app/list',{
             method: "POST",
             body: JSON.stringify({
                 listName: get("nameInp").value,
-                listCont: currentList
+                listCont: currentList,
+                userId: dataUserId,
+                auth: token
             }),
             headers: {
                 "Content-Type": "application/json; charset=utf-8"
@@ -168,32 +175,73 @@
             }
         }).catch(err =>{
             console.error(err);
-        });   
-    }
-   
-/*----------------- Show all lists ------------------- */
-    
-   function displayShowListTemp(){
-        viewTemp("showListTemp", cont);
-        refreshList();
+        }); 
+        console.log(dataUserId + dataUserName);
+        
         get("numTxt2", "numTxt1").innerHTML = "<span> Antall: " + listeData.length; + "</span>";
     }
     
+    get("profilTxt").innerHTML += dataUserName;
+    
+/*----------------- Show all lists ------------------- */
+    
+   function getListsFromDb(){
+        
+       
+       refreshList();
+     
+   }
+    
+    function displayShowListTemp(){
+        viewTemp("showListTemp", cont);
+        refreshList();
+
+    }
+    
     function refreshList() {
+        
+        //let response = await fetch(url);  
+        //let data = await response.json();
+        
+        let token = localStorage.getItem("token");
+       
+        let x = fetch('/app/list',{
+            method: "GET",
+            body: JSON.stringify({
+                listName: get("nameInp").value,
+                listCont: currentList,
+                userId: dataUserId,
+                auth: token
+            }),
+            headers: {
+                "Content-Type": "application/json; charset=utf-8"
+            },
+
+        }).then(function(data){
+            if(data.status < 400){
+                return data.json();
+            }
+        }).catch(err =>{
+            console.error(err);
+        });
+        
+        let response = await fetch(x);
+        let data = await response.json();
+        
         get("contLister").innerHTML = "";
-        for (let i = 0; i < listeData.length; i++) {
+        for (let i = 0; i < data.length; i++) {
             get("contLister").innerHTML += `
                 <hr>
-                <h4>${listeData[i].navn}</h4>
-                <p>Innhold: ${listeData[i].obj}</p>
+                <h4>${data[i].navn}</h4>
+                <p>Innhold: ${data[i].obj}</p>
             `;
             
-            let btn = document.createElement("button");
+            /*let btn = document.createElement("button");
             btn.appendChild(document.createTextNode("Vis"));
             btn.id = i;
             btn.onclick = showOne;//(event)
             get("contLister").appendChild(btn);
-            //get("contLister").innerHTML += "<hr>"
+            //get("contLister").innerHTML += "<hr>"*/
         }
     }
     

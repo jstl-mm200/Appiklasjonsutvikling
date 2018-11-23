@@ -192,7 +192,7 @@ input:hover {background-color: #f76f6f;}
 /* --------------- checkbox --------------------- */
 
 .checkLabel {
-    display: block;
+    display: inline-block;
     position: relative;
     padding-left: 35px;
     margin-bottom: 12px;

@@ -24,8 +24,12 @@
             <label for="password" class="inpLabel">Password</label>
             <input type="password" id="password"><br>
             
-            <input type="checkbox" id="rememberMe">
-            <label for="rememberMe" class="inpLabel">Remember Me</label><br>
+             <label class="checkLabel">
+                <input id="box" type="checkbox" onclick="cheked()">
+                <span class="checkmark" ></span>
+                <label for="box" class="inpLabel">Remember Me</label>
+            </label><br>
+            
 
             <button  id="loginBtn" class="buttons">Login</button><br>
             <button id="createUserBt" class="buttons" onclick="createUserBtn()" type="button">Create User</button>
@@ -97,7 +101,7 @@
 
             let userName = document.getElementById("userName").value;
             let password = document.getElementById("password").value;
-
+       
             if (userName.length > 1 && password.length > 1) {
                 /// login loginlogin
                 
@@ -121,8 +125,12 @@
                 }).then(json => {
                     // User is logged in.
                     authenticatedUser = json;
+            
+                    //console.log(id);
+                    localStorage.setItem("token", json.token);
+                    localStorage.setItem("userName", userName);
+                    localStorage.setItem("id", json.id);
                     displayTodoListTemplate();
-                    console.log(json);
                     // Velkommen skjerm
                 }).catch(err => {
                     // deal with error
@@ -130,6 +138,17 @@
             } else {
                 alert("Danger! Danger!")
             }                
+        }
+    
+        function cheked() {
+        let box = document.getElementById("box")
+            if (box.checked == true){
+                console.log("checked");
+                //checkedElem.push();
+            } 
+            else {
+               console.log("un-checked");
+            }
         }
     
 /*---------------------------- Lag bruker ----------------------------------*/
@@ -180,7 +199,7 @@
             }
         }   
     
-/*---------------------------- Velkommen ----------------------------------*/
+/*---------------------------- Velkommen inn ----------------------------------*/
     
         function displayTodoListTemplate(){
             console.log("velkommen");
