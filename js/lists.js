@@ -12,7 +12,7 @@ router.post('/app/list',authorize, async function(req,res,next){
     let listName = req.body.listName;
     let listCont = req.body.listCont;
   
-    let query = `INSERT INTO public."lists"("list_name", "list_element", "") VALUES('${listName }', '${listCont}') RETURNING *`;
+    let query = `INSERT INTO public."lists"("list_name", "list_element") VALUES('${listName }', '${listCont}') RETURNING *`;
 
     console.log("query " + query);
 
@@ -20,10 +20,9 @@ router.post('/app/list',authorize, async function(req,res,next){
         let result = await db.insert(query);
         console.log(result);
         res.status(200).json({
-            msg: "Hello, " + result.listName +" id "+ result.list_id,
-            //listId: result.list_id
-            //let listArray = result.rows[0];
-            //listId: listArray.list_id
+            msg: "Hello, " + result.listName + " id "+ result.list_id,
+            listId: result.list_id,
+            //listArray: result.rows[0]
         });
 
     } catch (error) {
@@ -35,27 +34,25 @@ router.post('/app/list',authorize, async function(req,res,next){
     res.status(200).send("YESSS");  
 });
 
-router.get("/app/list/",authorize, function(req,res,next){
+router.get("/app/list/",authorize, async function(req,res,next){
     // hente og se alle lister
   
-    let query = `SELECT * FROM lists WHERE list_name`;
+    let query = `SELECT * FROM "all_lists"`;
     
     try {
-        await db.select(query);
-        
+        let result = await db.select(query);
+        res.status(200).json(result.rows);
+    
     }catch (err) {
             res.status(500).json({error : err});
     }   
-    
-    res.status(200).send("YESSS");
-    
 });
 
-router.post("/app/list/:listID",authorize,function(req,res,next){
+router.post("/app/list/:listID",authorize, async function(req,res,next){
     
 }); // gå inn på en spesifik liste
 
-router.get("/app/list/:listeID",authorize, function(req,res,next){
+router.get("/app/list/:listeID",authorize, async function(req,res,next){
     
     // hente og se en liste 
     

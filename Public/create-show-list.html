@@ -67,7 +67,7 @@
             <h3>Lag ny liste</h3>    
 
             <input id="nameInp" placeholder="Listenavn" ><br><br>    
-            <input id="elemInp" class="inpField" placeholder="Hva skal gjøres" type="text">
+            <input id="elemInp" class="inpField" placeholder="Hva skal gjøres" type="text"><br>
             <button id="btnAddElem" class="buttons">Legg til</button><br><br>
             <button id="btnDone" class="buttons" onclick="addListToDb()">Ferdig!</button>
             <div id="contCreateList"></div> 
@@ -92,7 +92,7 @@
         <h2 id="titleTxt">Mine liser</h2>
         <hr>
         
-        <div id="contLister" class="container"></div> 
+        <div id="contLister"></div> 
     </template>
     
 <!---------------------- profil modal ---------------------> 
@@ -167,82 +167,71 @@
             }),
             headers: {
                 "Content-Type": "application/json; charset=utf-8"
-            },
+            },                
 
         }).then(function(data){
             if(data.status < 400){
                 return data.json();
+                localStorage.setItem("listId", json.listId);
             }
         }).catch(err =>{
             console.error(err);
         }); 
         console.log(dataUserId + dataUserName);
         
-        get("numTxt2", "numTxt1").innerHTML = "<span> Antall: " + listeData.length; + "</span>";
+        /*get("numTxt1").innerHTML = "<span> Antall: " + listeData.length; + "</span>";
+        get("numTxt2").innerHTML = "<span> Antall: " + listeData.length; + "</span>";*/
     }
     
     get("profilTxt").innerHTML += dataUserName;
     
 /*----------------- Show all lists ------------------- */
     
-   function getListsFromDb(){
-        
-       
-       refreshList();
-     
-   }
-    
+
     function displayShowListTemp(){
         viewTemp("showListTemp", cont);
-        refreshList();
-
+        showListsToDb();
+    }
+    let data;
+    
+    async function showListsToDb() {
+        let token = localStorage.getItem("token");
+        
+        let cfg = {
+            method: "GET",            
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "x-access-auth": token
+            }
+        }
+        
+        try { 
+            let response = await fetch("/app/list/", cfg);
+            data = await response.json();
+            console.log(data); 
+            refresh();1
+            
+        } catch (err) {
+            console.log(err);
+        }
     }
     
-    function refreshList() {
-        
-        //let response = await fetch(url);  
-        //let data = await response.json();
-        
-        let token = localStorage.getItem("token");
-       
-        let x = fetch('/app/list',{
-            method: "GET",
-            body: JSON.stringify({
-                listName: get("nameInp").value,
-                listCont: currentList,
-                userId: dataUserId,
-                auth: token
-            }),
-            headers: {
-                "Content-Type": "application/json; charset=utf-8"
-            },
-
-        }).then(function(data){
-            if(data.status < 400){
-                return data.json();
-            }
-        }).catch(err =>{
-            console.error(err);
-        });
-        
-        let response = await fetch(x);
-        let data = await response.json();
-        
+    function refresh(){
         get("contLister").innerHTML = "";
         for (let i = 0; i < data.length; i++) {
             get("contLister").innerHTML += `
-                <hr>
-                <h4>${data[i].navn}</h4>
-                <p>Innhold: ${data[i].obj}</p>
-            `;
+            <hr>
+            <h4>${data[i].list_name}</h4>
+            <p>${data[i].list_element}</p><br>
+        `;
             
-            /*let btn = document.createElement("button");
+            let btn = document.createElement("button");
             btn.appendChild(document.createTextNode("Vis"));
             btn.id = i;
             btn.onclick = showOne;//(event)
             get("contLister").appendChild(btn);
-            //get("contLister").innerHTML += "<hr>"*/
-        }
+            //get("contLister").innerHTML += "<hr>";
+        }            
     }
     
 /*----------------- Show one lists ------------------- */  
@@ -252,7 +241,7 @@
         console.log("klikk id " + current);
         get("contLister").innerHTML ="";
         
-        for (let i=0; i < listeData[current].obj.length; i++){
+        for (let i=0; i < data[current].obj.length; i++){
             get("titleTxt").innerHTML = listeData[current].navn;
             get("contLister").innerHTML += `  
                 <label class="checkLabel"> ${listeData[current].obj[i]}
