@@ -8,50 +8,8 @@
 </head>
 
 <body>
-    
-    <div id="container" class="container"></div>
-    
-<!---------------------- Forside --------------------->
-    
-    <template id="frontPageTemp">
-        
-        <!-------------- Meny ------------->   
-        <ul class="navbar">
-            <li class="nav-bar-txt"><span id="profilTxt"></span></li>
-        </ul>
-        
-        <h1> OVERSIKT </h1>
-    
-       <div class="menuChoice" onclick="displayCreateListTemp()">
-            <h3>NY LISTE</h3>
-            <p>Hei</p>
-            <img src="img/new-list-icon.png" class="icons">
-        </div>
-        
-        <div class="menuChoice">
-            <h3>MINE LISTER</h3>
-            <p id="numTxt1">Ingen lister</p>
-            <img src="img/list-icon.png" class="icons">
-        </div>
-        
-        <div class="menuChoice">
-            <h3>KALENDER</h3>
-            <p>Ingen avtaler eller tidspunkter</p>
-            <img src="img/calender.icon.png" class="icons">
-        </div>
-        
-        <div class="menuChoice" onclick="openModal1()">
-            <h3>PROFIL</h3>
-            <p>Hei</p>
-            <img src="img/profile-icon.png" class="icons">
-        </div>
-        
-    </template>
-        
-<!---------------------- lag liste ---------------------> 
-    
-    <template id="createListTemp">
-        
+
+    <div  class="container">
         <!------ nav ------>   
         <ul class="navbar">
             <li class="navbarElem"><a class="active">Hjem</a></li>
@@ -59,36 +17,80 @@
             <li class="navbarElem"><a onclick="displayShowListTemp()" >Mine lister</a></li>
             <li class="navbarElem"><a onclick="openModal1()">Profil</a></li>
             <li class="navbarElem"><a onclick="openModal2()">Logg ut</a></li>
-            <li class="navbarElem"><span id="numTxt2" class="nav-bar-txt">Ingen lister</span></li>
-            <li class="nav-bar-txt"><span >"Brukernavn"</span></li>
-            
-        </ul>
+            <li class="navbarElem"><span id="numTxt1" class="nav-bar-txt">Ingen lister</span></li>
+            <li class="nav-bar-txt"><span id="userTxt"></span></li>
+        </ul>  
+        
+        <div id="container"></div>
+      
+    </div>
+    
+<!---------------------- Forside --------------------->
+    
+    <template id="frontPageTemp">
+        
+        <!-------------- Meny -------------> 
+        
+        <!--<ul class="navbar">
+            <li class="nav-bar-txt"><span id="userTxt1"></span></li>
+        </ul> -->
+        
+        <h1> OVERSIKT </h1>
+    
+       <div class="menuChoice" onclick="displayCreateListTemp()">
+            <h3>NY LISTE</h3>
+            <p>Hei</p>
+            <img src="../img/new-list-icon.png" class="icons">
+        </div>
+        
+        <div class="menuChoice" onclick="displayShowListTemp()">
+            <h3>MINE LISTER</h3>
+            <p id="numTxt2">Ingen lister</p>
+            <img src="../img/list-icon.png" class="icons">
+        </div>
+        
+        <div class="menuChoice">
+            <h3>KALENDER</h3>
+            <p>Ingen avtaler eller tidspunkter</p>
+            <img src="../img/calender.icon.png" class="icons">
+        </div>
+        
+        <div class="menuChoice" onclick="openModal1()">
+            <h3>PROFIL</h3>
+            <p>Hei</p>
+            <img src="../img/profile-icon.png" class="icons">
+        </div>
+        
+    </template>
+    
+<!---------------------- lag ny liste ---------------------> 
+    
+    <template id="createListTemp">
+        
         <div id="create-list-div">
             <h3>Lag ny liste</h3>    
 
-            <input id="nameInp" placeholder="Listenavn" ><br><br>    
-            <input id="elemInp" class="inpField" placeholder="Hva skal gjøres" type="text"><br>
-            <button id="btnAddElem" class="buttons">Legg til</button><br><br>
-            <button id="btnDone" class="buttons" onclick="addListToDb()">Ferdig!</button>
-            <div id="contCreateList"></div> 
+            <input class="inpField" placeholder="Listenavn" id="nameInp">
+            <button id="btnDone" class="buttons" onclick="addListToDb()">Ferdig!</button><br><br> 
+            
+            <div id="listNameCont"></div>
+          
         </div>
+    </template>
+    
+<!---------------------- legg til posts ---------------------> 
+    
+    <template id="addPostToList">
+        <h3 id="listNameHeader"></h3>   
+        <input id="elemInp" class="inpField" placeholder="Hva skal gjøres" type="text"><br>
+        <button id="btnAddPost" class="buttons" onclick="addPostsToDb()">Legg til</button><br><br>
+        <div id="contCreateList"></div> 
     </template>
     
 <!---------------------- vis lister ---------------------> 
     
     <template id="showListTemp">
-        
-        <!------ Nav ------>    
-        <ul class="navbar">
-            <li class="navbarElem"><a class="active" onclick="displayfrontPageTemp()" >Hjem</a></li>
-            <li class="navbarElem"><a onclick="displayCreateListTemp()">Ny liste</a></li>
-            <li class="navbarElem"><a onclick="displayShowListTemp()" >Mine lister</a></li>
-            <li class="navbarElem"><a onclick="openModal1()">Profil</a></li>
-            <li class="navbarElem"><a onclick="openModal2()">Logg ut</a></li>
-            <li class="navbarElem"><span id="numTxt2" class="nav-bar-txt">Ingen lister</span></li>
-            <li class="nav-bar-txt"><span >"Brukernavn"</span></li>
-        </ul>
-        
+                
         <h2 id="titleTxt">Mine liser</h2>
         <hr>
         
@@ -101,7 +103,7 @@
 
         <div class="modal-content">
             <span id="close" onclick="closeModal()" >&times;</span>
-            <p><img src="img/profile-icon-red-border.png" class="icons"></p>
+            <p><img src="../img/profile-icon-red-border.png" class="icons"></p>
             <h3 id="profName" style="margin-top: -66px;">Navn</h3>
             <p id="profUName">Brukernavn</p>
             <p id="profEmail">Epost</p>
@@ -123,6 +125,8 @@
     
 <script>
     
+    //For å vise hvr mange lister en bruker har: SELECT COUNT(ProductID) FROM Products;
+    
     const DEBUG = true;
     var authenticationToken = null;
     var authenticatedUser = null;
@@ -138,63 +142,128 @@
         viewTemp("frontPageTemp", cont);
     }   
     
-/*----------------- Create a list ------------------- */
+/*----------------- Create a new  list ------------------- */
     
     function displayCreateListTemp(){
-        viewTemp("createListTemp", cont);  
-    
-        get("btnAddElem").onclick = function(){
-            console.log("klikk la til et punkt"); 
-            currentList.push(get("elemInp").value)
-            get("contCreateList").innerHTML += `<ul><li>${elemInp.value}</li><ul>`;
-            console.log(currentList);
-            get("elemInp").value ="";            
-        }
+        viewTemp("createListTemp", cont); 
     }
    
     function addListToDb(){
         
         let token = localStorage.getItem("token");
-        
-        console.log("sender liste til db"); 
-        fetch('/app/list',{
+        let request = {
             method: "POST",
             body: JSON.stringify({
                 listName: get("nameInp").value,
-                listCont: currentList,
                 userId: dataUserId,
-                auth: token
+                auth: token,
+                whatToDo: "new list"
             }),
             headers: {
                 "Content-Type": "application/json; charset=utf-8"
-            },                
-
-        }).then(function(data){
-            if(data.status < 400){
-                return data.json();
-                localStorage.setItem("listId", json.listId);
             }
+        };
+        
+        console.log("sender liste til db"); 
+        
+        fetch('/app/list',request).then(data => {
+            if(data.status < 400){
+                return data.json();                
+            }
+            
+        }).then(json => {
+            localStorage.setItem("listId",json.listId);
         }).catch(err =>{
             console.error(err);
         }); 
         console.log(dataUserId + dataUserName);
         
-        /*get("numTxt1").innerHTML = "<span> Antall: " + listeData.length; + "</span>";
-        get("numTxt2").innerHTML = "<span> Antall: " + listeData.length; + "</span>";*/
+        get("listNameCont").innerHTML += `<p>Lista: <span style="color:#f76f6f;">${get("nameInp").value}</span> er opprettet </p>`;
+        //get("nameInp").value = "";
+        
+        let btn = document.createElement("button");
+        btn.appendChild(document.createTextNode("Endre"));
+        btn.classList.add("buttons");
+        btn.onclick = displayEditLis;
+        get("listNameCont").appendChild(btn);
+        
+        localStorage.setItem("current listName",get("nameInp").value);
     }
     
-    get("profilTxt").innerHTML += dataUserName;
+    get("userTxt").innerHTML += dataUserName;
+
+/*----------------- add post to list ------------------- */
+    
+    function displayEditLis(){
+        viewTemp("addPostToList", cont);
+        let currentName = localStorage.getItem("current listName")
+        get("listNameHeader").innerHTML += `<h3>${currentName}</h3>`
+    }
+    
+    function addPostsToDb(){
+        
+        let token = localStorage.getItem("token");
+        let request = {
+                method: "POST",
+                body: JSON.stringify({
+                    listPost: get("elemInp").value,
+                    listId: localStorage.getItem("listId"),
+                    auth: token,
+                    whatToDo: "new post"
+                }),
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8"
+                }
+            };
+            console.log("sender liste til db"); 
+
+            fetch('/app/post',request).then(data => {
+                if(data.status < 400){
+                    return data.json();
+                }
+            }).then(json => {
+                localStorage.setItem("postId",json.postId);
+            }).catch(err =>{
+                console.error(err);
+            }); 
+        
+        
+        get("contCreateList").innerHTML += `<ul><li>${get("elemInp").value}</li></ul>`;
+    }
     
 /*----------------- Show all lists ------------------- */
-    
+    let data;
+    let dataPost;
+    let dataLength;
 
     function displayShowListTemp(){
         viewTemp("showListTemp", cont);
-        showListsToDb();
+        showListsFromDb();
+        //showPostsFromDb();
     }
-    let data;
+        
+    async function showListsFromDb() {
+        let token = localStorage.getItem("token");
+        
+        let cfg = {
+            method: "GET",            
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "x-access-auth": token
+            }
+        }        
+        try { 
+            let response = await fetch("/app/list", cfg);
+            data = await response.json();
+            console.log(data); 
+            refresh();
+            
+        } catch (err) {
+            console.log(err);
+        }
+    }
     
-    async function showListsToDb() {
+    async function showPostsFromDb() {
         let token = localStorage.getItem("token");
         
         let cfg = {
@@ -204,12 +273,11 @@
                 "x-access-auth": token
             }
         }
-        
         try { 
-            let response = await fetch("/app/list/", cfg);
-            data = await response.json();
-            console.log(data); 
-            refresh();1
+            let response = await fetch("/app/post", cfg);
+            dataPost = await response.json();
+            console.log(dataPost); 
+            //refresh();
             
         } catch (err) {
             console.log(err);
@@ -217,22 +285,28 @@
     }
     
     function refresh(){
+        dataLength = data.length;
         get("contLister").innerHTML = "";
         for (let i = 0; i < data.length; i++) {
             get("contLister").innerHTML += `
-            <hr>
-            <h4>${data[i].list_name}</h4>
-            <p>${data[i].list_element}</p><br>
-        `;
+                <hr>
+                <h4>${data[i].list_name}</h4>
+                <p></p><br>
+            `;
             
+           //${dataPost[0].post} 
             let btn = document.createElement("button");
-            btn.appendChild(document.createTextNode("Vis"));
+            btn.appendChild(document.createTextNode("Vis/endre"));
             btn.id = i;
+            btn.classList.add("buttons");
             btn.onclick = showOne;//(event)
             get("contLister").appendChild(btn);
             //get("contLister").innerHTML += "<hr>";
-        }            
+        }   
+        console.log(last);
     }
+    
+    get("numTxt1").innerHTML = dataLength;
     
 /*----------------- Show one lists ------------------- */  
     
