@@ -6,7 +6,7 @@ const users = require("./js/users.js");
 const lists = require("./js/lists.js")
 
 app.set('port', (process.env.PORT || 3000));
-app.use(express.static('public'));
+app.use(express.static('Public'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
   extended: false
