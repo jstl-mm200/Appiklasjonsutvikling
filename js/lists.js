@@ -9,7 +9,7 @@ const bcrypt = require('bcryptjs');
 //åpner loginside med riktig re-routing
 router.post('/app/showCreate', authorize, async function(req,res,next){
     
-    var fileText = global.appRoot + "\\Public\\create-show-list.html";
+    var fileText = global.appRoot + "/Public\\create-show-list.html";
     console.log(Object.keys(req.body));
     
     res.sendFile(fileText);
