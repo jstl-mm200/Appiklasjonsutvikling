@@ -125,7 +125,7 @@
                         document.getElementById("msg").innerHTML += "Feil brukernavn eller passord";
 
                     }else {
-                        return //new PromiseRejectionEvent();}
+                        return new PromiseRejectionEvent();}
                     
                 }).then(json => {
                     // User is logged in.
