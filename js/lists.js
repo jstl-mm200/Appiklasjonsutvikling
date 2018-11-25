@@ -16,7 +16,7 @@ router.post('/app/showCreate', authorize, async function(req,res,next){
 });
 
 //lager ny liste + navn 
-router.post('/app/list',authorize, async function(req,res,next){
+router.post('/app/list', authorize, async function(req,res,next){
     
     // Legge til en ny liste i db.
     let listName = req.body.listName;
@@ -115,6 +115,42 @@ router.get("/app/post",authorize, async function(req,res,next){
             res.status(500).json({error : err});
     }   
 });
+
+//ikke i bruke akkurat nå
+router.get("/app/list/:listID",authorize, async function(req,res,next){
+    
+    let query = `SELECT * FROM all_posts WHERE list_id ='74'`;
+    
+    try {
+        let result = await db.select(query);
+        res.status(200).json(result.rows);
+    
+    }catch (err) {
+        res.status(500).json({error : err});
+    }
+    
+}); 
+
+/*post_id: 24, 
+                    check: true */
+
+//endre rad i tabell 
+router.put("/app/post", authorize, async function(req,res,next){
+    let postId = req.body.postId;
+    let check = req.body.check;
+    //let query = `UPDATE all_posts SET check = 'true' WHERE "post_id" VALUES('${postId}') `;
+    // let query = `SELECT * FROM all_posts('post_id', 'check') VALUES('${postId}','${check}') RETURNING *`    
+    
+    try {
+        let result = await db.select(query);
+        res.status(200).json(result.rows);
+    
+    }catch (err) {
+            res.status(500).json({error : err});
+    }
+    
+}); 
+
 
 router.post("/app/list/:listID",authorize, async function(req,res,next){
     

@@ -227,8 +227,23 @@
                 console.error(err);
             }); 
         
+        let arrayPost= [];
+        arrayPost.push(get("elemInp").value);
+        get("contCreateList").innerHTML = "";
         
-        get("contCreateList").innerHTML += `<ul><li>${get("elemInp").value}</li></ul>`;
+        for(let i = 0; i < arrayPost.length; i++){
+         get("contCreateList").innerHTML += `
+                <ul class="ul-list"><li class="bullets">${arrayPost[i]} <button id="btn" onclick="duedate()">duedate</button></li></ul>
+            `;  
+        }
+        console.log(arrayPost);
+    }
+    
+    function duedate(){
+        console.log("tid");
+        let dateInp = document.createElement("input");
+        dateInp.setAttribute("type", "date");
+        get("contCreateList").appendChild(dateInp);
     }
     
 /*----------------- Show all lists ------------------- */
@@ -239,7 +254,7 @@
     function displayShowListTemp(){
         viewTemp("showListTemp", cont);
         showListsFromDb();
-        //showPostsFromDb();
+        showPostsFromDb();
     }
         
     async function showListsFromDb() {
@@ -285,44 +300,54 @@
     }
     
     function refresh(){
-        dataLength = data.length;
         get("contLister").innerHTML = "";
-        for (let i = 0; i < data.length; i++) {
+        for (let i = 0; i < listData.length; i++) {
             get("contLister").innerHTML += `
+                <h2 style="color: #f76f6f;">${listData[i].list_name}</h2>
+                <p> id: ${listData[i].list_id}</p>
+                <div>
+                    <img id="btnEditList"onclick="showOne(${i})" src="../img/new-list-icon.png" class="small-icons">
+                    <img onclick="deleteList(${i})" src="../img/delete-icon.png" class="small-icons">
+                </div>
                 <hr>
-                <h4>${data[i].list_name}</h4>
-                <p></p><br>
             `;
-            
-           //${dataPost[0].post} 
-            let btn = document.createElement("button");
-            btn.appendChild(document.createTextNode("Vis/endre"));
-            btn.id = i;
-            btn.classList.add("buttons");
-            btn.onclick = showOne;//(event)
-            get("contLister").appendChild(btn);
-            //get("contLister").innerHTML += "<hr>";
-        }   
-        console.log(last);
+            get("btnEditList").id = listData[i].list_id;
+        }         
     }
     
-    get("numTxt1").innerHTML = dataLength;
+    function deleteList(evt){
+        let selectedListId = event.currentTarget.id;        
+    }
     
 /*----------------- Show one lists ------------------- */  
     
-    function showOne(evt){
-        let current = event.currentTarget.id;
-        console.log("klikk id " + current);
+     async function showOne(evt){      
+        let selectedListId = event.currentTarget.id;
+     
+        let filterName =  listData.filter(function(name) {
+            return name.list_id == selectedListId;
+        });
+        
+        let filterPost =  postData.filter(function(post) {
+            return post.list_id == selectedListId;
+        });
+        
+        console.log(filterPost);
+        console.log("klikk liste id " + selectedListId + " navn: " + filterName[0].list_name);
         get("contLister").innerHTML ="";
         
-        for (let i=0; i < data[current].obj.length; i++){
-            get("titleTxt").innerHTML = listeData[current].navn;
+        for (let i=0; i < filterPost.length ; i++){
+            get("titleTxt").innerHTML = filterName[0].list_name;
             get("contLister").innerHTML += `  
-                <label class="checkLabel"> ${listeData[current].obj[i]}
+                <label class="checkLabel"> ${filterPost[i].post} <button>Slett</button>
                     <input id="box" type="checkbox" onclick="cheked()">
                     <span class="checkmark"></span>
-                </label>`;
+                </label><br>
+                `;
         }
+        get("contLister").innerHTML += `<button id="doneEdit" class="buttons">Ferdig!</button>`;
+        
+        //get("doneEdit").onclick = checkToDb;
     }
     
     function cheked() {
@@ -333,6 +358,32 @@
         else {
            console.log("un-checked");
         }
+    }
+    
+    async function checkToDb(){
+        console.log("update to db");
+        let token = localStorage.getItem("token");
+        let request = {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json; charset=utf-8",
+                    "x-access-auth": token
+                },
+                body:JSON.stringify({
+                    postId: 24
+                    //check: true
+                })
+            };
+            console.log("oppdate liste til db"); 
+
+            fetch('/app/post',request).then(data => {
+                if(data.status < 400){
+                    return data.json();
+                    console.log("ferdig oppdatert");
+                }
+            }).catch(err =>{
+                console.error(err);
+            });         
     }
     
 /*----------------- Profile-modal ------------------- */   
@@ -364,18 +415,6 @@
 
 /*----------------- -------------- ------------------- */   
 
-    function click(evt){
-        let selected;
-        console.log("farge");
-        if(selected) {
-            selected.classList.remove("active");
-            //console.log(data[evt.currentTarget.id]);
-        }
-      
-        selected = evt.target;
-        selected.classList.add("active");
-    }
-    
     function viewTemp(id, cont) {
         cont.innerHTML = "";
         let templ = document.getElementById(id);

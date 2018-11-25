@@ -23,6 +23,7 @@
 
             <label for="password" class="inpLabel">Password</label>
             <input type="password" id="password" name="password"><br>
+            <p id="msg"></p>
             
              <label class="checkLabel">
                 <input id="box" type="checkbox" onclick="cheked()">
@@ -118,10 +119,14 @@
                 
                 fetch(`/app/login`,request).then(data => {
                     if (data.status === 200) {
-                        return data.json()
-                    } else {
-                        return new PromiseRejectionEvent();
-                    }
+                        return data.json();
+                    } 
+                    else if (data.status === 401) {
+                        document.getElementById("msg").innerHTML += "Feil brukernavn eller passord";
+
+                    }else {
+                        return new PromiseRejectionEvent();}
+                    
                 }).then(json => {
                     // User is logged in.
                     authenticatedUser = json;
