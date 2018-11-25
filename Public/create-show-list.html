@@ -130,10 +130,12 @@
     const DEBUG = true;
     var authenticationToken = null;
     var authenticatedUser = null;
+    let cont = document.getElementById("container"); 
+    ///////////////////////////////////////////////////////////////////////
     let dataUserName = localStorage.getItem("userName");
     let dataUserId = localStorage.getItem("id");
     
-    let cont = document.getElementById("container");    
+       
     let currentList = [];
     let listeData = []; //slett etterhvert
     displayfrontPageTemp();

@@ -20,6 +20,7 @@ app.use(function(err, req, res, next) {
 
 app.use(users);
 app.use(lists);
+
 var path = require('path');
 global.appRoot = path.resolve(__dirname);
 
