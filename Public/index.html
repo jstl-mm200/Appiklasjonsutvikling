@@ -140,7 +140,7 @@
                     var form = document.createElement("form");
                     var element1 = document.createElement("input"); 
                     form.method = "POST";
-                    form.action = "/app/showCreate";   
+                    form.action = "app/showCreate";   
                     element1.value=json.token;
                     element1.name="auth";
                     form.appendChild(element1); 
@@ -157,7 +157,7 @@
             }                
         }
     
-        function cheked() {
+        function checked() {
         let box = document.getElementById("box")
             if (box.checked == true){
                 console.log("checked");
