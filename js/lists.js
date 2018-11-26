@@ -16,15 +16,16 @@ router.post('/app/showCreate', authorize, async function(req,res,next){
 });
 
 //lager ny liste + navn 
-router.post('/app/list', authorize, async function(req,res,next){
+router.post('/app/list',authorize, async function(req,res,next){
     
     // Legge til en ny liste i db.
     let listName = req.body.listName;
     let userId = req.body.userId;
-    let whatToDo = req.body.whatToDo
+    let whatToDo = req.body.whatToDo;
+    let active = req.body.active;
     
     if(whatToDo === "new list"){
-        let query = `INSERT INTO public."all_lists"("user_id", "list_name") VALUES('${userId}','${listName }') RETURNING *`;
+        let query = `INSERT INTO public."all_lists"("user_id", "list_name", "active") VALUES('${userId}','${listName}', '${active}') RETURNING *`;
 
         console.log("query " + query);
 
@@ -33,7 +34,8 @@ router.post('/app/list', authorize, async function(req,res,next){
             if(result.rows.length>0){
                 res.status(200).json({
                     msg: "Hello, " + result.rows[0].listName + " id "+ result.rows[0].list_id,
-                    listId: result.rows[0].list_id
+                    listId: result.rows[0].list_id,
+                    active: result.rows[0].active
                 }).end();
             }else{
                 res.status(500).json({
@@ -49,9 +51,8 @@ router.post('/app/list', authorize, async function(req,res,next){
         }
     }else if(whatToDo === "delete list"){
         //TODO: slette liste fra database
+        
     }
-
-    //res.status(200).send("YESSS");  
 });
  
 //legger til posts i liste
@@ -59,9 +60,12 @@ router.post('/app/post',authorize, async function(req,res,next){
     
     let listPost = req.body.listPost;
     let listId = req.body.listId;
+    let check = req.body.check
+    let active = req.body.active;
     let whatToDo = req.body.whatToDo;
+    
     if(whatToDo === "new post"){
-        let query = `INSERT INTO public."all_posts"("post", "list_id") VALUES('${listPost}','${listId}') RETURNING *`;
+        let query = `INSERT INTO public."all_posts"("post", "list_id", "check", "activepost") VALUES('${listPost}','${listId}','${check}', '${active}') RETURNING *`;
 
         console.log("query " + query);
 
@@ -89,37 +93,11 @@ router.post('/app/post',authorize, async function(req,res,next){
 });
 
 // hente og se alle liste-navn
-router.get("/app/list",authorize, async function(req,res,next){
+router.get("/app/list/", async function(req,res,next){
+    
+    let token = req.query.token;
   
-    let query = `SELECT * FROM "all_lists"`;
-    
-    try {
-        let result = await db.select(query);
-        res.status(200).json(result.rows);
-    
-    }catch (err) {
-            res.status(500).json({error : err});
-    }   
-});
-
-// hente ut alle posts
-router.get("/app/post",authorize, async function(req,res,next){
-
-    let query = `SELECT * FROM "all_posts"`;
-    
-    try {
-        let result = await db.select(query);
-        res.status(200).json(result.rows);
-    
-    }catch (err) {
-            res.status(500).json({error : err});
-    }   
-});
-
-//ikke i bruke akkurat nå
-router.get("/app/list/:listID",authorize, async function(req,res,next){
-    
-    let query = `SELECT * FROM all_posts WHERE list_id ='74'`;
+    let query = `SELECT * FROM all_lists WHERE user_id = '${token}' AND active = 1 `;
     
     try {
         let result = await db.select(query);
@@ -127,19 +105,13 @@ router.get("/app/list/:listID",authorize, async function(req,res,next){
     
     }catch (err) {
         res.status(500).json({error : err});
-    }
+    }   
+});
+
+// hente ut alle posts
+router.get("/app/post",authorize, async function(req,res,next){
     
-}); 
-
-/*post_id: 24, 
-                    check: true */
-
-//endre rad i tabell 
-router.put("/app/post", authorize, async function(req,res,next){
-    let postId = req.body.postId;
-    let check = req.body.check;
-    //let query = `UPDATE all_posts SET check = 'true' WHERE "post_id" VALUES('${postId}') `;
-    // let query = `SELECT * FROM all_posts('post_id', 'check') VALUES('${postId}','${check}') RETURNING *`    
+    let query = `SELECT * FROM all_posts WHERE activepost = '1' `;
     
     try {
         let result = await db.select(query);
@@ -147,20 +119,40 @@ router.put("/app/post", authorize, async function(req,res,next){
     
     }catch (err) {
             res.status(500).json({error : err});
-    }
-    
-}); 
+    } 
+});
 
+//sletter liste
+router.post("/app/list/delete",authorize, async function(req,res,next){
+    
+    let delListId = req.body.delListId;
+    
+    let query = `UPDATE all_lists SET active ='0' WHERE list_id = '${delListId}' `;
+    
+    try {
+        let result = await db.update(query);
+        res.status(200).json(result.rows);
+    
+    }catch (err) {
+            res.status(500).json({error : err});
+    } 
+    
+});
 
-router.post("/app/list/:listID",authorize, async function(req,res,next){
+//slette posts
+router.post("/app/post/delete",authorize, async function(req,res,next){
     
-}); // gå inn på en spesifik liste
-
-router.get("/app/list/:listeID",authorize, async function(req,res,next){
+    let delListId = req.body.delListId;
     
-    // hente og se en liste 
+    let query = `UPDATE all_posts SET activepost ='0' WHERE post_id = '${delListId}' `;
     
-    res.status(200).send("YESSS");
+    try {
+        let result = await db.update(query);
+        res.status(200).json(result.rows);
+    
+    }catch (err) {
+            res.status(500).json({error : err});
+    } 
     
 });
 

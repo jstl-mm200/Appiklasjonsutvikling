@@ -27,7 +27,7 @@ h3 {
     margin-bottom: 0px;    
 }
 
-p {
+.ptag{
     font-size: 25px;
     font-family: "BebasNeue";
     text-align: left;
@@ -67,21 +67,23 @@ input:hover {background-color: #f76f6f;}
     box-shadow: 5px 10px 8px #888888;     
 }
 
-.buttons:hover {background-color: #f76f6f;} 
-
-.cancelbtn {
-    width: auto;
-    background-color: #f76f6f;
+.small-button {
+    background-color: #ffff;
+    color: black;
+    padding: 14px 20px;
+    border-radius: 60% / 20%;
+    border: none;
+    cursor: pointer;
+    width: 17%;
+    margin: 0px auto 15px auto;
+    text-shadow: 2.5px 2.5px 10px #000000;
+    font-size: 17px;
+    box-shadow: 5px 10px 8px #888888;     
 }
 
-.cancelbtn:hover {background-color: #fff}
+.buttons:hover {background-color: #f76f6f;} 
 
 .inpLabel {font-size: 17px;}
-
-/*span.psw {
-    float: right;
-    padding-top: 16px;
-}*/
 
 /* Change styles for span and cancel button on extra small screens */
 @media screen and (max-width: 300px) {
@@ -150,6 +152,17 @@ input:hover {background-color: #f76f6f;}
     width: 15%
 }
 
+.small-icons{
+    padding-top: 0px;
+    padding-left: 10px;
+    width: 4%
+}
+
+.small-icons:hover {
+    cursor: pointer;
+    transform: scale(1.7); 
+}
+
 .menuChoice {
     margin-left: auto;
     margin-right: auto;
@@ -183,76 +196,52 @@ input:hover {background-color: #f76f6f;}
     text-align: center;
 }
 
-/* --------------- lag liste temp ---------------- */
-#create-list-div{
-    
+/* --------------- lister opp posts i ny liste ---------------- */
+
+.ul-list {    
+    font-size: 2em;
+    list-style: none;
+    margin: 2em;
+    padding: 0;
 }
-
-
-/* --------------- checkbox --------------------- */
-
-.checkLabel {
-    display: inline-block;
+  
+.bullets {
+    margin: 0;
+    margin-bottom: 1em;
+    padding-left: 0.8em;
+    padding-top: 0em;
     position: relative;
-    padding-left: 35px;
-    margin-bottom: 12px;
-    cursor: pointer;
-    font-size: 22px;
 }
-
-/* Hide the browser's default checkbox */
-.checkLabel input {
-    position: absolute;
-    opacity: 0;
-    cursor: pointer;
-    height: 0;
-    width: 0;
-}
-
-/* Create a custom checkbox */
-.checkmark {
-    position: absolute;
-    top: 0;
-    left: 0;
-    height: 25px;
-    width: 25px;
-    background-color:  #cccccc;
-}
-
-/* On mouse-over, add a grey background color */
-.checkLabel:hover input ~ .checkmark {
-    background-color: #f76f6f;
-}
-
-/* When the checkbox is checked, add a blue background */
-.checkLabel input:checked ~ .checkmark {
-    background-color: indianred;
-}
-
-/* Create the checkmark/indicator (hidden when not checked) */
-.checkmark:after {
-    content: "";
-    position: absolute;
-    display: none;
-}
-
-/* Show the checkmark when checked */
-.checkLabel input:checked ~ .checkmark:after {
+        
+.bullets::after {
+    content: '';
+    height: .4em;
+    width: .4em;
+    background: #f76f6f;
     display: block;
+    position: absolute;
+    transform: rotate(45deg);
+    top: .25em;
+    left: 0;    
 }
 
-/* Style the checkmark/indicator */
-.checkLabel .checkmark:after {
-    left: 9px;
-    top: 5px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
+/* ------------ vis en liste, 2 kolonner------------- */
+
+
+/* Create two equal columns that floats next to each other */
+.column {
+    float: left;
+    width: 50%;
+    padding: 10px; /* Should be removed. Only for demonstration */
 }
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+.row{box-sizing: border-box;}
 
 /* --------------- Modal profil --------------------- */
 
@@ -311,4 +300,6 @@ input:hover {background-color: #f76f6f;}
     margin-left: 100px;
     background-color: lightgray;    
 }
+
+#contLister, #contDone{margin-left: 40px;}
 

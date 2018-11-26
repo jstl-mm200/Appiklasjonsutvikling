@@ -28,12 +28,12 @@
              <label class="checkLabel">
                 <input id="box" type="checkbox" onclick="cheked()">
                 <span class="checkmark" ></span>
-                <label for="box" class="inpLabel">Remember Me</label>
+                <label for="box" class="inpLabel">Husk meg </label>
             </label><br>
             
 
             <button  id="loginBtn" class="buttons">Login</button><br>
-            <button id="createUserBt" class="buttons" onclick="createUserBtn()" type="button">Create User</button>
+            <button id="createUserBt" class="buttons" onclick=" ()" type="button">Create User</button>
         </form>
     </template>
     
@@ -126,7 +126,7 @@
 
                     }else {
                         return new PromiseRejectionEvent();}
-                    
+                        
                 }).then(json => {
                     // User is logged in.
                     authenticatedUser = json;
@@ -157,7 +157,7 @@
             }                
         }
     
-        function checked() {
+        function cheked() {
         let box = document.getElementById("box")
             if (box.checked == true){
                 console.log("checked");
