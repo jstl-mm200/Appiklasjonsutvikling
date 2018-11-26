@@ -500,6 +500,13 @@
     function logout(){
         window.location = "index.html";
         //logger faktisk ikke ut
+        router.post('/app/login', authorize, async function(req,res,next){
+    
+        var fileText = global.appRoot + "/Public/index.html";
+        console.log(Object.keys(req.body));
+    
+        res.sendFile(fileText);
+});
     }
 
 /*----------------- -------------- ------------------- */   
