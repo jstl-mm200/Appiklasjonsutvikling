@@ -60,12 +60,11 @@ router.post('/app/post',authorize, async function(req,res,next){
     
     let listPost = req.body.listPost;
     let listId = req.body.listId;
-    let check = req.body.check
     let active = req.body.active;
     let whatToDo = req.body.whatToDo;
     
     if(whatToDo === "new post"){
-        let query = `INSERT INTO public."all_posts"("post", "list_id", "check", "activepost") VALUES('${listPost}','${listId}','${check}', '${active}') RETURNING *`;
+        let query = `INSERT INTO public."all_posts"("post", "list_id", "activepost") VALUES('${listPost}','${listId}', '${active}') RETURNING *`;
 
         console.log("query " + query);
 
@@ -156,22 +155,6 @@ router.post("/app/post/delete",authorize, async function(req,res,next){
     
 });
 
-
-//mark check post
-router.post("/app/post/check",authorize, async function(req,res,next){
-    
-    let checkPostId = req.body.checkPostId;
-    
-    let query = `UPDATE all_posts SET check ='1' WHERE post_id = '${checkPostId}' `;
-    
-    try {
-        let result = await db.update(query);
-        res.status(200).json(result.rows);
-    
-    }catch (err) {
-            res.status(500).json({error : err});
-    }     
-});
 
 
 module.exports = router;

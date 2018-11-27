@@ -91,10 +91,8 @@
         <hr class="style-hr">
         
         <div class="row">
-        <h3 id="titleTxt2" style="color: #f76f6f;">Mine lister</h3>
+        <h3 id="titleTxt2" style="color: #f76f6f;"></h3>
             <div id="contPost" class="column"></div> 
-            <hr class="style-hr">
-            <div id="contDone" class="column"></div> 
         </div>
     </template>
 
@@ -191,7 +189,6 @@
                 body: JSON.stringify({
                     listPost: get("elemInp").value,
                     listId: localStorage.getItem("listId"),
-                    check: 0,
                     active: 1,
                     auth: token,
                     whatToDo: "new post"
@@ -345,8 +342,7 @@
    
     async function showOne(evt){   
         viewTemp("showPostTemp", cont); 
-        viewCheckPost();
-        
+            
         selectedListId = event.currentTarget.id;
      
         let filterName =  listData.filter(function(name) {
@@ -357,7 +353,7 @@
             return post.list_id == selectedListId;
         });
         
-        console.log(filterPost);
+        console.log(filterName);
         get("contPost").innerHTML ="";
         
         function refreshPosts(){
@@ -367,31 +363,21 @@
         for (let i=0; i < filterPost.length ; i++){
             get("titleTxt2").innerHTML = filterName[0].list_name;
             get("contPost").innerHTML += ` 
-                <div class="post-div">
-                <img id="donePost" onclick="viewCheckPost()" src="../img/checkmark-icon.png" class="small-icons"
-                <lable for="donePost"> ${filterPost[i].post}</label>
+                <div class="post-div">        
+                <lable for="delPostBtn"> ${filterPost[i].post}</label>
                 <img id="delPostBtn" onclick="deletePost()" src="../img/delete-icon.png" class="small-icons"></div>
             `;
-                
-            get("donePost").id = filterPost[i].post_id;
             get("delPostBtn").id = filterPost[i].post_id;     
 
-        }
-               
-        get("contPost").innerHTML += `<br><br> <button id="doneEdit" class="buttons">Ferdig!</button>`;
-        
-        let title = document.createElement("h3");
-        let txt2 = document.createTextNode("Ferdig!");
-        title.appendChild(txt2);
-        get("contDone").appendChild(title);
+        }               
     }
     
  /*----------------- check to done ------------------- */  
-    let checkPostId;
+    /*let checkPostId;
     function viewCheckPost(evt){
         checkPostId = event.currentTarget.id;
         let filterDone =  postData.filter(function(done) {
-            return done.post_id == selectedPostId;
+            return done.check == 1;
         });
         console.log(filterDone);    
         
@@ -426,7 +412,7 @@
         }).catch(err =>{
             console.error(err);
         });
-    }    
+    }  */  
     
 /*----------------- Delete Posts ------------------- */ 
     
