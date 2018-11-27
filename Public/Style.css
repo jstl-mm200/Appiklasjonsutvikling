@@ -3,11 +3,6 @@ body {
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.container {
-    border: 3px solid #f76f6f; 
-    padding-bottom: 70px;
-}
-
 .post-div{background-color: #cccccc; padding: 15px; border-bottom: 1px solid #fff;}
 
 .styel-div{margin-left: 40px;}
