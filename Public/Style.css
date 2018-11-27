@@ -8,6 +8,12 @@ body {
     padding-bottom: 70px;
 }
 
+.post-div{background-color: #cccccc; padding: 15px; border-bottom: 1px solid #fff;}
+
+.styel-div{margin-left: 40px;}
+
+.style-hr{border: 3px solid #f76f6f; width: 70%;}
+
 h1 {
     font-size: 100px;
     font-family: "BebasNeue";
@@ -84,17 +90,6 @@ input:hover {background-color: #f76f6f;}
 .buttons:hover {background-color: #f76f6f;} 
 
 .inpLabel {font-size: 17px;}
-
-/* Change styles for span and cancel button on extra small screens */
-@media screen and (max-width: 300px) {
-    /*span.psw {
-       display: block;
-       float: none;
-    }
-    .cancelbtn {
-       width: 100%;
-    }*/
-}
 
 /* --------------- nav --------------------- */
 
@@ -227,15 +222,13 @@ input:hover {background-color: #f76f6f;}
 
 /* ------------ vis en liste, 2 kolonner------------- */
 
-
-/* Create two equal columns that floats next to each other */
 .column {
     float: left;
     width: 50%;
-    padding: 10px; /* Should be removed. Only for demonstration */
+    padding: 10px; 
+    margin-left: 40px;
 }
 
-/* Clear floats after the columns */
 .row:after {
     content: "";
     display: table;
@@ -300,6 +293,4 @@ input:hover {background-color: #f76f6f;}
     margin-left: 100px;
     background-color: lightgray;    
 }
-
-#contLister, #contDone{margin-left: 40px;}
 

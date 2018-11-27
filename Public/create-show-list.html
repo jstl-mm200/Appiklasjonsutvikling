@@ -13,9 +13,8 @@
     <div  class="container">
         <!------ nav ------>   
         <ul class="navbar">
-            <li class="navbarElem"><a class="active">Hjem</a></li>
-            <li class="navbarElem"><a onclick="displayCreateListTemp()">Ny liste</a></li>
-            <li class="navbarElem"><a onclick="displayShowListTemp()" >Mine lister</a></li>
+            <li class="navbarElem"><a class="active"  onclick="displayfrontPageTemp()" >Hjem</a></li>          
+            <li class="navbarElem"><a onclick="displayShowListTemp()" >Lister</a></li>
             <li class="navbarElem"><a onclick="openModal1()">Profil</a></li>
             <li class="navbarElem"><a onclick="openModal2()">Logg ut</a></li>
             <li class="navbarElem"><span id="numTxt1" class="nav-bar-txt">Ingen lister</span></li>
@@ -32,27 +31,18 @@
         
         <!-------------- Meny -------------> 
         
-        <!--<ul class="navbar">
-            <li class="nav-bar-txt"><span id="userTxt1"></span></li>
-        </ul> -->
-        
         <h1> OVERSIKT </h1>
     
-       <div class="menuChoice" onclick="displayCreateListTemp()">
-            <h3>NY LISTE</h3>
-            <p class="ptag">Hei</p>
-            <img src="../img/new-list-icon.png" class="icons">
-        </div>
         
         <div class="menuChoice" onclick="displayShowListTemp()">
-            <h3>MINE LISTER</h3>
+            <h3>LISTER</h3>
             <p id="numTxt2" class="ptag">Ingen lister</p>
             <img src="../img/list-icon.png" class="icons">
         </div>
         
         <div class="menuChoice">
             <h3>KALENDER</h3>
-            <p>Ingen avtaler eller tidspunkter</p>
+            <p class="ptag">Ingen avtaler eller tidspunkter</p>
             <img src="../img/calender.icon.png" class="icons">
         </div>
         
@@ -62,41 +52,48 @@
             <img src="../img/profile-icon.png" class="icons">
         </div>
         
-    </template>
-    
-<!---------------------- lag ny liste ---------------------> 
-    
-    <template id="createListTemp">
-        
-        <div id="create-list-div">
-            <h3>Lag ny liste</h3>    
-
-            <input class="inpField" placeholder="Listenavn" id="nameInp">
-            <button id="btnDone" class="buttons" onclick="addListToDb()">Ferdig!</button><br><br> 
-            
-            <div id="listNameCont"></div>
-          
-        </div>
-    </template>
-    
-<!---------------------- legg til posts ---------------------> 
-    
-    <template id="addPostToList">
-        <h3 id="listNameHeader"></h3>   
-        <input id="elemInp" class="inpField" placeholder="Hva skal gjøres" type="text"><br>
-        <button id="btnAddPost" class="buttons" onclick="addPostsToDb()">Legg til</button><br><br>
-        <div id="contCreateList"></div> 
-    </template>
+    </template> 
     
 <!---------------------- vis lister ---------------------> 
     
-    <template id="showListTemp">
+    <template id="showListTemp" style="container">
+        
+        <div id="create-list-div" align="center">
+            <h3 style="color: #f76f6f; "><center>Lag ny liste</center></h3>    
+
+            <input class="inpField" placeholder="Listenavn" id="nameInp">
+            <button id="btnDone" class="buttons" onclick="addListToDb()">Ferdig!</button>
+            <span id="listNameCont"></span>
+            <br><br>
+        </div>
+        
+        <hr class="style-hr" align="center">
                 
         <h3 id="titleTxt" style="color: #f76f6f;">Mine lister</h3>
         <hr>
+        <div id="contLister" class="column"></div>            
+        
+     </template>
+    
+<!---------------------- vis en liste/posts --------------------->
+    
+    <template id="showPostTemp">
+        
+        <div class="styel-div" align="center">
+            <h3 id="listNameHeader"></h3>   
+            <input id="elemInp" class="inpField" placeholder="Hva skal gjøres" type="text">
+            <label for="dateInp">Frist dato</label>
+            <input type="date" class="inpField" id="dateInp"><br><br>
+            <button id="btnAddPost" class="buttons" onclick="addPostsToDb(); showOne(); " >Legg til</button>
+            <div id="contCreateList"></div>
+        </div>  
+        
+        <hr class="style-hr">
+        
         <div class="row">
-            <div id="contLister" class="column"></div>            
-            <hr> 
+        <h3 id="titleTxt2" style="color: #f76f6f;">Mine lister</h3>
+            <div id="contPost" class="column"></div> 
+            <hr class="style-hr">
             <div id="contDone" class="column"></div> 
         </div>
     </template>
@@ -128,19 +125,16 @@
 </body>
     
 <script>
-    
-    //For å vise hvr mange lister en bruker har: SELECT COUNT(ProductID) FROM Products;
+
     
     const DEBUG = true;
     var authenticationToken = null;
     var authenticatedUser = null;
     let dataUserName = localStorage.getItem("userName");
     let dataUserId = localStorage.getItem("id");
-    //let dataListId = 
+  
     
-    let cont = document.getElementById("container");    
-    let currentList = [];
-    let listeData = []; //slett etterhvert
+    let cont = document.getElementById("container");
     displayfrontPageTemp();
     
     function displayfrontPageTemp(){
@@ -148,10 +142,6 @@
     }   
     
 /*----------------- Create a new  list ------------------- */
-    
-    function displayCreateListTemp(){
-        viewTemp("createListTemp", cont); 
-    }
    
     function addListToDb(){
         
@@ -184,30 +174,17 @@
         }); 
         console.log(dataUserId + dataUserName);
         
-        get("listNameCont").innerHTML += `<p class="ptag">Lista: <span style="color:#f76f6f;">${get("nameInp").value}</span> er opprettet </p>`;
-        //get("nameInp").value = "";
-        
-        let btn = document.createElement("button");
-        btn.appendChild(document.createTextNode("Endre"));
-        btn.classList.add("buttons");
-        btn.onclick = displayEditLis;
-        get("listNameCont").appendChild(btn);
+        get("listNameCont").innerHTML += `<span class="ptag">Lista: <span style="color:#f76f6f;">${get("nameInp").value}</span> er opprettet </span>`;
         
         localStorage.setItem("current listName",get("nameInp").value);
+        get("nameInp").value = "";
     }
     
     get("userTxt").innerHTML += dataUserName;
 
 /*----------------- add post to list ------------------- */
     
-    function displayEditLis(){
-        viewTemp("addPostToList", cont);
-        let currentName = localStorage.getItem("current listName")
-        get("listNameHeader").innerHTML += `<h3>${currentName}</h3>`
-    }
-    
-    function addPostsToDb(){
-        
+    function addPostsToDb(){        
         let token = localStorage.getItem("token");
         let request = {
                 method: "POST",
@@ -222,29 +199,18 @@
                 headers: {
                     "Content-Type": "application/json; charset=utf-8"
                 }
-            };
-            console.log("sender liste til db"); 
+        };
+        console.log("sender liste til db"); 
 
-            fetch('/app/post',request).then(data => {
-                if(data.status < 400){
-                    return data.json();
-                }
-            }).then(json => {
-                localStorage.setItem("postId",json.postId);
-            }).catch(err =>{
-                console.error(err);
-            }); 
-        
-        let arrayPost= [];
-        arrayPost.push(get("elemInp").value);
-        get("contCreateList").innerHTML = "";
-        
-        for(let i = 0; i < arrayPost.length; i++){
-            get("contCreateList").innerHTML += `
-                <ul class="ul-list"><li class="bullets">${arrayPost[i]} <button id="btn" onclick="duedate()">duedate</button></li></ul>
-            `;  
-        }
-        console.log(arrayPost);
+        fetch('/app/post',request).then(data => {
+            if(data.status < 400){
+                return data.json();
+            }
+        }).then(json => {
+            localStorage.setItem("postId",json.postId);
+        }).catch(err =>{
+            console.error(err);
+        });         
     }
     
     function duedate(){
@@ -258,15 +224,14 @@
     let listData;
     let postData;
     let curListId;
+    let listActive;
     
-    console.log(dataUserId)
-    //let username = localStorage.getItem("userName");
+    console.log(dataUserId);
 
     function displayShowListTemp(){
         viewTemp("showListTemp", cont);
         showListsFromDb();
         showPostsFromDb();
-        //showUnCheckFromDb();
     }
     
     async function showListsFromDb() {
@@ -278,7 +243,7 @@
                 "Content-Type": "application/json; charset=utf-8",
                 "x-access-auth": token
             }
-        }   //// fetch(`/app/user/${username}`).then(data => {     
+        }   
         try { 
             let response = await fetch('/app/list/?token=' + dataUserId, cfg);
             listData = await response.json();
@@ -289,6 +254,8 @@
             console.log(err);
         }
     }
+    
+/*----------------- Show one list/posts------------------- */
     
     async function showPostsFromDb() {
         let token = localStorage.getItem("token");
@@ -310,7 +277,6 @@
         }
     }
     
-    let listActive;
     function active(){
         listActive =  listData.filter(function(name) {
             return name.active == 1; 
@@ -344,12 +310,12 @@
         let ok = confirm("Vil du slette?");
         if (ok == true) {
             console.log("You pressed OK!");
-            x();
+            deleteList();
         } else {
             console.log("You pressed Cancel!");
         }
 
-        function x(){
+        function deleteList(){
             let token = localStorage.getItem("token");
             let request = {
                 method: "POST",
@@ -378,8 +344,9 @@
 /*----------------- Show one lists ------------------- */  
    
     async function showOne(evt){   
+        viewTemp("showPostTemp", cont); 
+        viewCheckPost();
         
-     
         selectedListId = event.currentTarget.id;
      
         let filterName =  listData.filter(function(name) {
@@ -391,87 +358,114 @@
         });
         
         console.log(filterPost);
-        console.log("klikk liste id " + selectedListId + " navn: " + filterName[0].list_name);
-        get("contLister").innerHTML ="";
+        get("contPost").innerHTML ="";
+        
+        function refreshPosts(){
+            
+        }
         
         for (let i=0; i < filterPost.length ; i++){
-            get("titleTxt").innerHTML = filterName[0].list_name;
-            get("contLister").innerHTML += ` 
-                <button id="donePost" onclick="checkPost()">V</button>
+            get("titleTxt2").innerHTML = filterName[0].list_name;
+            get("contPost").innerHTML += ` 
+                <div class="post-div">
+                <img id="donePost" onclick="viewCheckPost()" src="../img/checkmark-icon.png" class="small-icons"
                 <lable for="donePost"> ${filterPost[i].post}</label>
-                <img id="delPostBtn" onclick="deletePost()" src="../img/delete-icon.png" class="small-icons"><br>
+                <img id="delPostBtn" onclick="deletePost()" src="../img/delete-icon.png" class="small-icons"></div>
             `;
                 
             get("donePost").id = filterPost[i].post_id;
             get("delPostBtn").id = filterPost[i].post_id;     
 
         }
+               
+        get("contPost").innerHTML += `<br><br> <button id="doneEdit" class="buttons">Ferdig!</button>`;
         
-        let inp = document.createElement("INPUT");
-        let btn = document.createElement("BUTTON");
-        let txt = document.createTextNode("Legg til");
-        
-        get("contLister").appendChild(inp); 
-        btn.appendChild(txt);
-        get("contLister").appendChild(btn); 
-        
-        get("contLister").innerHTML += `<br><br> <button id="doneEdit" class="buttons">Ferdig!</button>`;
-        
-         let title = document.createElement("h3");
+        let title = document.createElement("h3");
         let txt2 = document.createTextNode("Ferdig!");
         title.appendChild(txt2);
         get("contDone").appendChild(title);
-        //get("doneEdit").onclick = checkToDb;*/
     }
     
  /*----------------- check to done ------------------- */  
-   
-    //contDone
-    function checkPost(evt){
-        selectedPostId = event.currentTarget.id;
+    let checkPostId;
+    function viewCheckPost(evt){
+        checkPostId = event.currentTarget.id;
         let filterDone =  postData.filter(function(done) {
             return done.post_id == selectedPostId;
         });
-        console.log(filterDone);
+        console.log(filterDone);    
         
-       
-                
         for (let i=0; i < filterDone.length ; i++){
             get("contDone").innerHTML += `
                 <lable> ${filterDone[i].post}</label><br>
             `;
-        }
-        
-    }
+        }  
+        checkPostToDb();
+    } 
+    
+    function checkPostToDb(){
+        let token = localStorage.getItem("token");
+        let request = {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json; charset=utf-8",
+                "x-access-auth": token
+            },
+            body:JSON.stringify({
+                checkPostId: checkPostId
+            })
+        };
+        console.log("oppdatert liste til db"); 
+
+        fetch('/app/post/check',request).then(data => {
+            if(data.status < 400){
+                return data.json();
+                console.log("ferdig oppdatert");
+                //displayShowListTemp();                    
+            }
+        }).catch(err =>{
+            console.error(err);
+        });
+    }    
     
 /*----------------- Delete Posts ------------------- */ 
     
    function deletePost(evt){
-        let selectedPostId = event.currentTarget.id; 
+       let selectedPostId = event.currentTarget.id; 
         console.log(selectedListId);
+       
+       let ok = confirm("Vil du slette?");
+        if (ok == true) {
+            console.log("You pressed OK!");
+            deletePost();
+        } else {
+            console.log("You pressed Cancel!");
+        }
         
-        let token = localStorage.getItem("token");
-        let request = {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json; charset=utf-8",
-                    "x-access-auth": token
-                },
-                body:JSON.stringify({
-                    delListId: selectedPostId
-                })
-            };
-            console.log("oppdatert liste til db"); 
+       function deletePost (){
+            let token = localStorage.getItem("token");
+            let request = {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json; charset=utf-8",
+                        "x-access-auth": token
+                    },
+                    body:JSON.stringify({
+                        delListId: selectedPostId
+                    })
+                };
+                console.log("oppdatert liste til db"); 
 
-            fetch('/app/post/delete',request).then(data => {
-                if(data.status < 400){
-                    return data.json();
-                    console.log("ferdig oppdatert");
-                    //displayShowListTemp();                    
-                }
-            }).catch(err =>{
-                console.error(err);
-            });        
+                fetch('/app/post/delete',request).then(data => {
+                    if(data.status < 400){
+                        return data.json();
+                        console.log("ferdig oppdatert");
+                        //displayShowListTemp();                    
+                    }
+                }).catch(err =>{
+                    console.error(err);
+                });  
+           }      
     } 
     
     
@@ -498,15 +492,8 @@
     }
     
     function logout(){
-        //window.location = "index.html";
-        //logger faktisk ikke ut
-        
-    
-        var fileText = global.appRoot + "/Public/index.html";
-        console.log(Object.keys(req.body));
-    
-        res.sendFile(fileText);
-
+        window.location = "../index.html";
+        localStorage.clear();
     }
 
 /*----------------- -------------- ------------------- */   

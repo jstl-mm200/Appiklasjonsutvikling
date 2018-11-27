@@ -156,4 +156,22 @@ router.post("/app/post/delete",authorize, async function(req,res,next){
     
 });
 
+
+//mark check post
+router.post("/app/post/check",authorize, async function(req,res,next){
+    
+    let checkPostId = req.body.checkPostId;
+    
+    let query = `UPDATE all_posts SET check ='1' WHERE post_id = '${checkPostId}' `;
+    
+    try {
+        let result = await db.update(query);
+        res.status(200).json(result.rows);
+    
+    }catch (err) {
+            res.status(500).json({error : err});
+    }     
+});
+
+
 module.exports = router;
